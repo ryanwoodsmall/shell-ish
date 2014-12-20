@@ -2,9 +2,12 @@
 
 usage () {
 	cat <<-USAGE
+	use openssl to read an HTTPS certificate from a remote host
+
 	$@ -h <host> -p <port>
 	  -h : hostname/IP address
 	  -p : port number
+
 	USAGE
 }
 
