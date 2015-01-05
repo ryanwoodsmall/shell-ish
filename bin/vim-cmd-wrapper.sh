@@ -31,6 +31,7 @@ while getopts "H:O:P:U:hv" opt ; do
 		;;
 	h)
 		usage
+		exit
 		;;
 	v)
 		${VIMCMD} -v | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
