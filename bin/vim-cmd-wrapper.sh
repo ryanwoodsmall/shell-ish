@@ -1,10 +1,18 @@
 #!/bin/bash
 
+VIMCMD="vmware-vim-cmd"
+
+hash ${VIMCMD}  2>/dev/null 
+if [ $? -ne 0 ] ; then
+	echo "${VIMCMD} is necessary" 1>&2
+	exit 1
+fi
+
 WSHAEGREPVPATTERN='^(filename|supported|license|description|author|depends|vermagic):'
 DEFAULTPORT="443"
 
 usage () {
-	vmware-vim-cmd -h | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
+	${VIMCMD} -h | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
 }
 
 while getopts "H:O:P:U:hv" opt ; do
@@ -25,7 +33,7 @@ while getopts "H:O:P:U:hv" opt ; do
 		usage
 		;;
 	v)
-		vmware-vim-cmd -v | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
+		${VIMCMD} -v | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
 		;;
 	esac
 done
@@ -42,3 +50,4 @@ fi
 
 ESXTHUMBPRINT=`gethttpscert.sh -h ${ESXHOST} -p ${ESXPORT} | certfingerprint.sh`
 
+${VIMCMD} -t "${ESXTHUMBPRINT}" "${@}" | egrep -v $WSHAEGREPVPATTERN
