@@ -8,7 +8,7 @@ if [ $? -ne 0 ] ; then
 	exit 1
 fi
 
-WSHAEGREPVPATTERN='^(filename|supported|license|description|author|depends|vermagic):'
+WSHAEGREPVPATTERN='^(filename|supported|license|description|author|depends|vermagic|srcversion):'
 DEFAULTPORT="443"
 
 usage () {
