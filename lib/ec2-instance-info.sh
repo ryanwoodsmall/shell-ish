@@ -40,7 +40,7 @@ function getec2instinfo() {
             if [[ ${spath} =~ .*/$ ]] ; then
                 getec2instinfo "${tpath}${spath}"
             else
-                ec2instinfo["${tpath}${spath}"]=$(${curlget} ${idurl}/${tpath}${spath} | sed 's/^/  /g')
+                ec2instinfo["${tpath}${spath}"]="$(${curlget} ${idurl}/${tpath}${spath})"
             fi
         fi
     done
