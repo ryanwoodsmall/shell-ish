@@ -7,6 +7,18 @@
 # only displays output if in interactive or debug mode
 # always exits nicely regardless of error
 
+# only run on xen, pv, hvm w/pv drivers,...
+# XXX - need to verify hvm stuff
+isxen=0
+test -e /sys/bus/xen && isxen=1
+/sbin/lsmod | grep -iq xen && isxen=1
+test ${isxen} -eq 0 && {
+    if [[ $- =~ x ]] ; then
+        echo "${0}: doesn't appear to be xen"
+    fi
+    return 0
+}
+
 idurl="http://169.254.169.254/latest"
 curlopts="-s -k -L --connect-timeout 1 --max-time 3"
 curlget="curl ${curlopts}"
