@@ -8,7 +8,7 @@
 # always exits nicely regardless of error
 
 idurl="http://169.254.169.254/latest"
-curlopts="-s -k -L"
+curlopts="-s -k -L --connect-timeout 1 --max-time 3"
 curlget="curl ${curlopts}"
 curlhead="curl ${curlopts} -I"
 declare -A ec2instinfo
