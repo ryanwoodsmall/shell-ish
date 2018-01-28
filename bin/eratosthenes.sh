@@ -26,12 +26,15 @@ if [ ${#} -ne 1 ] ; then
 fi
 
 n="${1}"
+test ${n} -lt 0 && n=$((${n}*-1))
 
 declare -a a
 a[0]=0
 a[1]=0
 
 p=2
+
+test ${n} -lt ${p} && exit
 
 for i in $(eval echo {${p}..${n}}) ; do
   a[${i}]=1

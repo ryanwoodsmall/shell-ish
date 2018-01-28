@@ -4,18 +4,20 @@
 # use sieve of eratosthenes to figure if a number is prime
 #
 
-if [ ${#} -ne 1 ] ; then
-  echo "please provide exactly one number"
-  exit
+if [ ${#} -ne 1 -o ${1} -eq 0 ] ; then
+  echo "please provide exactly one number that is not 0"
+  exit 1
 fi
 
+prime=1
 n=${1}
+test ${n} -lt 0 && n=$((${n}*-1))
+test ${n} -lt 2 && prime=0
 h=$(((${n}+1)/2))
 ps=( $(eratosthenes.sh ${h}) )
-prime=1
 
 for p in ${ps[@]} ; do
-  if [ $((${n}%${p})) -eq 0 ] ; then
+  if [ $((${n}%${p})) -eq 0 -a ${n} -ne 2 ] ; then
     prime=0
     break
   fi
