@@ -1,0 +1,19 @@
+#set -x
+
+# this is for clear linux, which has a "nice" default setup that sucks, like most "nice" things
+
+# XXX - ${BASH_COMPLETION_VERSINFO} is "test -z ..." in /usr/share/defaults/etc/profile.d/bash_completion.sh
+export BASH_COMPLETION_VERSINFO="0"
+
+# Use global profile when available
+if [ -f /usr/share/defaults/etc/profile ]; then
+        . /usr/share/defaults/etc/profile
+fi
+# allow admin overrides
+if [ -f /etc/profile ]; then
+        . /etc/profile
+fi
+
+# XXX - make sure we're in emacs editing mode, disable program options completion
+set -o emacs
+shopt -u progcomp
