@@ -1,0 +1,34 @@
+agent_list:
+%%PRIVS%%
+bootstrap_url: file:///opt/dcos_install_tmp
+cluster_name: dcos
+exhibitor_storage_backend: static
+master_discovery: static
+master_list:
+%%MASTERS%%
+public_agent_list:
+%%PUBS%%
+dcos_overlay_enable: true
+dcos_overlay_config_attempts: 3
+dcos_overlay_mtu: 1500
+dcos_overlay_network:
+  vtep_subnet: 44.128.0.0/20
+  vtep_mac_oui: 70:B3:D5:00:00:00
+  overlays:
+    - name: dcos
+      subnet: 9.0.0.0/8
+      prefix: 26
+dns_search: blah.one blah.two
+resolvers:
+%%NS%%
+use_proxy: 'false'
+check_time: true
+docker_remove_delay: 6hrs
+gc_delay: 1days
+log_directory: /genconf/logs
+process_timeout: 900
+oauth_enabled: 'false'
+telemetry_enabled: 'false'
+ssh_user: ryan
+ssh_key_path: /genconf/ssh_key 
+ssh_port: 22
