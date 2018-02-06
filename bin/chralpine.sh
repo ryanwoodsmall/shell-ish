@@ -50,7 +50,7 @@ function scriptecho() {
 # default versions/names/arch
 chrname="alpine"
 alpver="3.7.0"
-alparch="$(uname -m | sed 's/^\(arm\).*/\1hf/g')"
+alparch="$(uname -m | sed 's/^\(arm\).*/\1hf/g;s/^i.86$/x86/g')"
 sshport="22222"
 
 # where to download and install
