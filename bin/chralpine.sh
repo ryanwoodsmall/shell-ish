@@ -42,7 +42,7 @@
 #  ssh key exchange?
 
 # we'll use this a few times
-scriptname="${BASH_SOURCE[0]}"
+scriptname="$(basename "${BASH_SOURCE[0]}")"
 function scriptecho() {
   echo "${scriptname}: ${@}"
 }
