@@ -29,6 +29,9 @@ jcju="${ju}/jnlpJars/${jcj}"
 copts="-k -L -s"
 jcli="java -jar ${wdir}/${jcj} -s ${ju} ${jo}"
 
+# set default url
+export JENKINS_URL="${ju}"
+
 test -e "${wdir}/${jcj}" || {
   curl ${copts} -o "${wdir}/${jcj}" "${jcju}"
 }
