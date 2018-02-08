@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wdir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+wdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 : ${js:="http://"}
 : ${jh:="jm"}
 : ${jp:="8080"}
