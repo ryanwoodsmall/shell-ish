@@ -1,17 +1,36 @@
 #!/bin/bash
 
+#
+# jcli.sh
+#  shell wrapper around jenkins cli jnlp jar
+#
+# environment vars:
+#  jo - options to pass to the cli, default empty
+#  js - scheme, either http or https, default http
+#  jh - jenkins master hostname or ip, default localhost
+#  jp - jenkins master port, default 8080
+#
+
+for prereq in curl java ; do
+  which ${prereq} >/dev/null 2>&1 || {
+    echo "${prereq} not found"
+    exit 1
+  }
+done
+
 wdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+: ${jo:=""}
 : ${js:="http://"}
-: ${jh:="jm"}
+: ${jh:="localhost"}
 : ${jp:="8080"}
 ju="${js}${jh}:${jp}"
 jcj="jenkins-cli.jar"
 jcju="${ju}/jnlpJars/${jcj}"
 copts="-k -L -s"
-jcli="java -jar ${wdir}/${jcj} -s ${ju} ${jopts}"
+jcli="java -jar ${wdir}/${jcj} -s ${ju} ${jo}"
 
 test -e "${wdir}/${jcj}" || {
-	curl ${copts} -o "${wdir}/${jcj}" "${jcju}"
+  curl ${copts} -o "${wdir}/${jcj}" "${jcju}"
 }
 
 eval "${jcli}" "${@}"
