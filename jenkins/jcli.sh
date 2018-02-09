@@ -41,6 +41,7 @@ test -e "${wdir}/${jcj}" || {
 }
 unzip -l "${wdir}/${jcj}" >/dev/null 2>&1 || {
   echo "${wdir}/${jcj} doesn't appear to be a valid zip file"
+  rm -f "${wdir}/${jcj}"
   exit 1
 }
 
