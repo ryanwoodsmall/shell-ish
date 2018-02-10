@@ -12,9 +12,9 @@
 #
 
 read -p "host: " host
+read -p "match: " match
 read -p "user: " user
 read -s -p "pass: " pass
-read -p "match: " match
 
 copts="-k -L -s"
 url="http://${host}/cgi-bin/luci"
