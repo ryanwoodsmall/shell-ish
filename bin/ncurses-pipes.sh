@@ -3,6 +3,8 @@
 #
 # https://pastebin.com/raw/2PMfGJBM
 #
+# XXX - this needs to trap for reset;clear step
+#
 
 declare -i f=75 s=13 r=2000 t=0 c=1 n=0 l=0
 declare -ir w=$(tput cols) h=$(tput lines)
