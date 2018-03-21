@@ -1,12 +1,12 @@
 #!/bin/bash
 
-instdir="${HOME}/Downloads/rhino"
+instdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-rhinover="1.7.8"
+rhinover="1.7.9"
 rhinouri="https://github.com/mozilla/rhino/releases/download/Rhino${rhinover//./_}_Release/rhino-${rhinover}.jar"
 rhinofile="$(basename ${rhinouri})"
 rhinoclass="org.mozilla.javascript.tools.shell.Main"
-rhinosha256sum="6e83549d90ec45efd3be431573fac50db9efb21cb0246611809c317e75d9a2cd"
+rhinosha256sum="8ef93957cd12cadbd39c2d34ff9b2224970740fa667820cf72af4f917a0e5fed"
 
 jlinever="2.14.5"
 jlineuri="http://repo1.maven.org/maven2/jline/jline/${jlinever}/jline-${jlinever}.jar"
