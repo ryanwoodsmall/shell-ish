@@ -19,8 +19,8 @@ for u in ${rhinouri} ${jlineuri} ; do
   test -e ${outfile} || {
     echo "${outfile}:"
     curl -k -L -o ${outfile} ${u}
+    echo
   }
-  echo
 done
 
 if [[ $(sha256sum ${instdir}/${rhinofile} | awk '{print $1}') != ${rhinosha256sum} || $(sha256sum ${instdir}/${jlinefile} | awk '{print $1}') != ${jlinesha256sum} ]] ; then
