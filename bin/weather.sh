@@ -12,12 +12,11 @@
 # default to st. louis, mo, usa because i live in st. louis
 # auto detection finds st. louis... senegal
 # 'stl' is lambert airport, also works
-if [ ${#} -eq 0 ] ; then
-  loc='Saint Louis, United States of America'
-else
-  loc="${1}"
+: ${wttrinloc:='Saint Louis, United States of America'}
+if [ ${#} -ne 0 ] ; then
+  wttrinloc="${1}"
 fi
 
 # en.wttr.in ~= wttr.in/...?lang=en
-curl -kLs "http://en.wttr.in/${loc}" \
+curl -kLs "http://en.wttr.in/${wttrinloc}" \
 | egrep -v '^(New|Follow|$)'
