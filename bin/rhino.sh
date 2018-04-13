@@ -2,16 +2,16 @@
 
 instdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-rhinover="1.7.9"
-rhinouri="https://github.com/mozilla/rhino/releases/download/Rhino${rhinover//./_}_Release/rhino-${rhinover}.jar"
+rhinover="1.7.10"
+rhinouri="http://central.maven.org/maven2/org/mozilla/rhino/${rhinover}/rhino-${rhinover}.jar"
 rhinofile="$(basename ${rhinouri})"
 rhinoclass="org.mozilla.javascript.tools.shell.Main"
-rhinosha256sum="8ef93957cd12cadbd39c2d34ff9b2224970740fa667820cf72af4f917a0e5fed"
+rhinosha256sum="38eb3000cf56b8c7559ee558866a768eebcbf254174522d6404b7f078f75c2d4"
 
-jlinever="2.14.5"
-jlineuri="http://repo1.maven.org/maven2/jline/jline/${jlinever}/jline-${jlinever}.jar"
+jlinever="2.14.6"
+jlineuri="http://central.maven.org/maven2/jline/jline/${jlinever}/jline-${jlinever}.jar"
 jlinefile="$(basename ${jlineuri})"
-jlinesha256sum="4f347bc90d6f5ce61c0f8928d44a7b993275ceaa7d7f237714518a9bdd5003ce"
+jlinesha256sum="97d1acaac82409be42e622d7a54d3ae9d08517e8aefdea3d2ba9791150c2f02d"
 
 test -e ${instdir} || mkdir -p ${instdir}
 for u in ${rhinouri} ${jlineuri} ; do
