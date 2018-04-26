@@ -41,10 +41,15 @@
 #  user creation?
 #  ssh key exchange?
 #  check for 'nodev' on target dir and remount,dev it
-#  scriptname needs to be set to chralpine.sh if BASH_SOURCE is /dev/fd/...
 
 # we'll use this a few times
-scriptname="$(basename "${BASH_SOURCE[0]}")"
+progname="chralpine.sh"
+if [[ ${BASH_SOURCE[0]} =~ /dev/fd/ ]] ; then
+  scriptname="${progname}"
+else
+  scriptname="$(basename "${BASH_SOURCE[0]}")"
+fi
+exit 1
 function scriptecho() {
   echo "${scriptname}: ${@}"
 }
