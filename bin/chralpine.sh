@@ -42,6 +42,7 @@
 #  ssh key exchange?
 #  check for 'nodev' on target dir and remount,dev it
 #  cgroups bind mounts?
+#  lib/modules bind mount?
 
 # we'll use this a few times
 progname="chralpine.sh"
