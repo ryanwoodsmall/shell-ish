@@ -49,7 +49,6 @@ if [[ ${BASH_SOURCE[0]} =~ /dev/fd/ ]] ; then
 else
   scriptname="$(basename "${BASH_SOURCE[0]}")"
 fi
-exit 1
 function scriptecho() {
   echo "${scriptname}: ${@}"
 }
