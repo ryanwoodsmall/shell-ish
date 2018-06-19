@@ -31,7 +31,7 @@ curl -kLs https://en.wikipedia.org/wiki/List_of_Unix_commands \
 # m4 - misc - mand (gnu m4)
 # mailx - misc - mand
 # pax - misc - mand
-# prs - proc_mgmt - mand
+# prs - sccs - opt
 # qalter - batch - obs
 # qdel - batch - obs
 # qhold - batch - obs
