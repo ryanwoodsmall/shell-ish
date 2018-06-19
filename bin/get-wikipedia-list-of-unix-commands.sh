@@ -2,9 +2,12 @@
 
 #
 # get list of stuff from https://en.wikipedia.org/wiki/List_of_Unix_commands
-# see if it's installed
-# combine with box-utils.sh and crosware busybox/coreutils/toybox/sbase-box/ubase-box/9base
 #
+# see if it's installed, combine with box-utils.sh and crosware busybox/coreutils/toybox/sbase-box/ubase-box/9base
+#
+
+# XXX - lsb? http://refspecs.linuxfoundation.org/LSB_5.0.0/LSB-Common/LSB-Common/rcommands.html
+# XXX - better source for sus? posix? free ones?
 
 curl -kLs https://en.wikipedia.org/wiki/List_of_Unix_commands \
 | sed -n '/<table.*sortable/,/<\/table/p' \
