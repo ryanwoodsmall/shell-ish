@@ -17,7 +17,7 @@ curl -kLs https://en.wikipedia.org/wiki/List_of_Unix_commands \
 
 # XXX - figure these out not found stuff:
 #
-# admin - sccs - opt                                                                                                                                                                                         [1/40]
+# admin - sccs - opt
 # asa - text - opt
 # at - proc_mgmt - mand
 # batch - proc_mgmt - mand
