@@ -9,8 +9,12 @@ whoami | grep -q root || {
 # common
 #
 
-# ssh file in boot
-# gpu_mem=16 in config.txt
+# XXX - /boot stuff
+#       ssh file in boot
+#       gpu_mem=16 in config.txt
+
+# XXX - lots of this needs to be moved to shared setup script
+#       raspbian, armbian, debian, ubuntu
 
 # package stuff
 test -e /root/pkglist.initial || dpkg -l > /root/pkglist.initial
@@ -28,6 +32,15 @@ curl -kLo /tmp/${zramdebfile} ${zramdeburl}
 dpkg -i /tmp/${zramdebfile}
 systemctl enable zram-config.service
 systemctl start zram-config.service
+
+# rc.local
+ercl="/etc/rc.local"
+sed -i.ORIG '/^exit.*/d' ${ercl}
+echo 'systemctl disable raspi-config.service' >> ${ercl}
+echo 'systemctl stop raspi-config.service' >> ${ercl}
+echo 'systemctl stop raspi-config.service' >> ${ercl}
+echo 'echo performance | tee /sys/devices/system/cpu/cpu?/cpufreq/scaling_governor' >> ${ercl}
+echo 'exit 0' >> ${ercl}
 
 #
 # raspberry pi 2 or 3
