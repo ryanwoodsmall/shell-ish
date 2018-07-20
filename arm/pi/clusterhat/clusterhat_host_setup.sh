@@ -14,18 +14,27 @@ whoami | grep -q root || {
 
 # package stuff
 test -e /root/pkglist.initial || dpkg -l > /root/pkglist.initial
-#apt-get purge -y bash-completion
+apt-get purge -y bash-completion
 apt-get purge -y dphys-swapfile
 apt-get autoremove -y
 apt-get update
 apt-get install -y bc bridge-utils dc screen vim-nox
 #apt-get dist-upgrade -y
 
+# zram
+zramdeburl="https://mirrors.edge.kernel.org/ubuntu/pool/universe/z/zram-config/zram-config_0.5_all.deb"
+zramdebfile="$(basename ${zramdeburl})"
+curl -kLo /tmp/${zramdebfile} ${zramdeburl}
+dpkg -i /tmp/${zramdebfile}
+systemctl enable zram-config.service
+systemctl start zram-config.service
+
 #
 # raspberry pi 2 or 3
 #
 
 # bridge setup
+# XXX - make this an array - usb0..#
 grep -q usb0 /etc/network/interfaces || {
   cp /etc/network/interfaces{,.ORIG}
   cat >/tmp/br0.conf<<-EOF
