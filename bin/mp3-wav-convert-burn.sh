@@ -42,7 +42,7 @@ find . ${fopts} \
   # get extension (.mp3, .MP3, ...}
   e="${n##*.}"
   # generate .wav file
-  w="${n//.${e}/.wav}"
+  w="${n/%.${e}/.wav}"
   echo "converting '${f}' to '${w}'"
   mpg123 -w "${w}" "${f}"
 done
