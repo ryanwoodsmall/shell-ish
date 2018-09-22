@@ -7,6 +7,10 @@
 #     - java-readline is in ~/Downloads/github/aclemons/java-readline and "mvn install ; env JAVA_HOME=... make" has been run
 #     - jdbc jars are copied or symlinked into ~/Downloads/jdbc
 #
+# XXX
+#   - this is mostly just for having a centralized jdbc .jar directory
+#   - ${HOME}/.henplus/lib can be used for something similar by default
+#
 
 henplusdir="${HOME}/Downloads/github/neurolabs/henplus"
 javareadline="${HOME}/Downloads/github/aclemons/java-readline"
