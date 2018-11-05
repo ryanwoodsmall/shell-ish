@@ -5,14 +5,13 @@
 #
 
 if [ ${#} -ne 1 ] ; then
-	echo "please provide a file"
-	exit 1
-fi
-
-f="${1}"
-if [ ! -e "${f}" ] ; then
-	echo "${f} does not exist"
-	exit 1
+	f="/dev/stdin"
+else
+	f="${1}"
+	if [ ! -e "${f}" ] ; then
+		echo "${f} does not exist"
+		exit 1
+	fi
 fi
 
 # let's make this dumb
@@ -32,8 +31,10 @@ for i in ${!a[@]} ; do
 	t["${a[${i}]}"]=0
 done
 
+# XXX - use CRLF as a crutch here
 c=0
-cat "${f}" | tr '\n' ' ' | tr -s ' ' | while IFS= read -n1 e ; do
+cat "${f}" | unix2dos | tr '\n' ' ' | tr -s ' ' | while IFS= read -n1 e ; do
+	# XXX - could speed up by checking if [[ ${e} =~ ^[A-Za-z]$q ]] here
 	if [ ! -z "${t[${e}]}" ] ; then
 		if [ ${c} -eq 0 ] ; then
 			echo -n "${l[${e}]}"
@@ -45,5 +46,6 @@ cat "${f}" | tr '\n' ' ' | tr -s ' ' | while IFS= read -n1 e ; do
 	else
 		echo -n "${e}"
 	fi
-done
-echo
+done \
+| tr '\r' '\n' \
+| sed 's/^ //g'
