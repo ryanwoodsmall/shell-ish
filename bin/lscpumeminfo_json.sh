@@ -5,6 +5,16 @@
 #  https://github.com/jpmens/jo
 #  https://github.com/stedolan/jq
 #
+# for /proc/cpuinfo, something like:
+#   cat /proc/cpuinfo \
+#   | tr '\t' ' ' \
+#   | tr -s ' ' \
+#   | sed 's/ : /=/g;/:$/d' \
+#   | sort -u \
+#   | egrep -vi '^($|(processor|core id|(initial |)apicid|cpu mhz)=)' \
+#   | jo -p \
+#   | jq .
+#
 
 jsonprogs=( 'lscpu' 'cat /proc/meminfo' )
 jsonprogsnum="${#jsonprogs[@]}"
