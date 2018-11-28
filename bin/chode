@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#
+# wrapper around chown+chmod
+#  chown: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/chown.html
+#  chmod: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/chmod.html
+#
+# options defined by posix
+#  chown: -h -R -H -L -P
+#  chmod: -R
+#
+# usage:
+#  chode -R user:group:mode file|directory
+#
+
+:
