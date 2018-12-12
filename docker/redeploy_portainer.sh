@@ -14,5 +14,6 @@ docker \
   -p 9000:9000 \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v ${datadir}:/data \
+  --privileged \
   --restart always \
   portainer/portainer
