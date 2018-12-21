@@ -164,6 +164,7 @@ while getopts ":n:v:i:p:h" opt ; do
 done
 
 # we should only have one more thing left - our command
+# XXX - would something like "shift $(($OPTIND - 1))" work here?
 shift $((${optcount}*2))
 if [ ${#} -ne 1 ] ; then
   scriptecho "please provide exactly one commnad"
