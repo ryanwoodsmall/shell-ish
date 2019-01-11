@@ -3,6 +3,9 @@
 #
 # open an unencrypted tcp listener connecting to the docker socket
 #
+# from unix-unix idea here:
+#   https://developers.redhat.com/blog/2015/02/25/inspecting-docker-activity-with-socat/
+#
 # XXX - can be made secure using openssl-listen: and proper cert setup!
 #
 
