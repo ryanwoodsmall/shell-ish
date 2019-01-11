@@ -5,6 +5,8 @@
 #
 # from unix-unix idea here:
 #   https://developers.redhat.com/blog/2015/02/25/inspecting-docker-activity-with-socat/
+# some other examples:
+#   https://www.cyberciti.biz/faq/linux-unix-tcp-port-forwarding/
 #
 # XXX - can be made secure using openssl-listen: and proper cert setup!
 #
