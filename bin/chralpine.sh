@@ -57,7 +57,7 @@ function scriptecho() {
 
 # default versions/names/arch
 chrname="alpine"
-alpver="3.8.2"
+alpver="3.9.0"
 alparch="$(uname -m | sed 's/^\(arm\).*/\1hf/g;s/^i.86$/x86/g')"
 sshport="22222"
 
