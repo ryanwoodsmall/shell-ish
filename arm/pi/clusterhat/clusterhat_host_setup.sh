@@ -33,6 +33,9 @@ dpkg -i /tmp/${zramdebfile}
 systemctl enable zram-config.service
 systemctl start zram-config.service
 
+# disable attempted resume from zram to speed up boot
+echo 'RESUME=none' > /etc/initramfs-tools/conf.d/noresume.conf
+
 # rc.local
 ercl="/etc/rc.local"
 sed -i.ORIG '/^exit.*/d' ${ercl}
