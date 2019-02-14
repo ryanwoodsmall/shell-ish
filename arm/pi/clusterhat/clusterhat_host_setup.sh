@@ -36,6 +36,13 @@ systemctl start zram-config.service
 # disable attempted resume from zram to speed up boot
 echo 'RESUME=none' > /etc/initramfs-tools/conf.d/noresume.conf
 
+# performance governor
+#sudo apt-get install cpufrequtils
+#echo 'GOVERNOR="performance"' | sudo tee /etc/default/cpufrequtils
+## XXX - mix of old/new, make sure systemctl stuff works for debian 9+ and/or ubuntu 18+
+#update-rc.d cpufrequtils enable
+#sudo systemctl disable ondemand
+
 # rc.local
 ercl="/etc/rc.local"
 sed -i.ORIG '/^exit.*/d' ${ercl}
