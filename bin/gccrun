@@ -9,6 +9,9 @@
 # todo:
 #   c++ detection w/g++run named symlink
 #   custom main function
+#   custom tmp dir pattern (for noexec /tmp mounts)
+#   proper quoting, bracing
+#   script formatting
 #   ...
 #
 
