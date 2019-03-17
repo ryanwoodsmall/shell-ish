@@ -12,6 +12,7 @@
 #   custom tmp dir pattern (for noexec /tmp mounts)
 #   proper quoting, bracing
 #   script formatting
+#   could be extended to do std libc/syscall exploration
 #   ...
 #
 
