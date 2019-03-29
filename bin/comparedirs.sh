@@ -23,8 +23,8 @@ for d in "${d1}" "${d2}" ; do
   fi
 done
 
-d1files=( "$(cd "${d1}" ; find . -type f | sort | sed 's#^\./##g')" )
-d2files=( "$(cd "${d2}" ; find . -type f | sort | sed 's#^\./##g')" )
+d1files=( "$(cd "${d1}" ; find . -type f -o -type l | sort | sed 's#^\./##g')" )
+d2files=( "$(cd "${d2}" ; find . -type f -o -type l | sort | sed 's#^\./##g')" )
 
 declare -A d1sha256 d2sha256
 
@@ -40,25 +40,15 @@ for d2file in ${d2files[@]} ; do
   d2sha256["${d2file}"]="$(sha256sum "${d2}/${d2file}" | awk '{print $1}')"
 done
 
-for d1file in ${d1files[@]} ; do
-  if [ -z "${d2sha256[${d1file}]}" ] ; then
-    echo "Only in ${d1}: ${d1file}"
+for file in $(echo ${d1files[@]} ${d2files[@]} | tr ' ' '\n' | sort -u) ; do
+  if [ -z "${d2sha256[${file}]}" ] ; then
+    echo "Only in ${d1}: ${file}"
+    continue
+  elif [ -z "${d1sha256[${file}]}" ] ; then
+    echo "Only in ${d2}: ${file}"
     continue
   fi
-done | tr -s '/'
-
-for d2file in ${d2files[@]} ; do
-  if [ -z "${d1sha256[${d2file}]}" ] ; then
-    echo "Only in ${d2}: ${d2file}"
-    continue
-  fi
-done | tr -s '/'
-
-for d1file in ${d1files[@]} ; do
-  if [ -z "${d2sha256[${d1file}]}" ] ; then
-    continue
-  fi
-  if [ "${d1sha256[${d1file}]}" != "${d2sha256[${d1file}]}" ] ; then
-    echo "Files ${d1}/${d1file} and ${d2}/${d1file} differ"
+  if [ "${d1sha256[${file}]}" != "${d2sha256[${file}]}" ] ; then
+    echo "Files ${d1}/${file} and ${d2}/${file} differ"
   fi
 done | tr -s '/'
