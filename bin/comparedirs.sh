@@ -5,6 +5,8 @@
 # gnu diff can do this with "diff --brief --recursive d1/ d2/"
 # we sort of mimic its output
 #
+# XXX - does *not* handle spaces in names, oy
+#
 
 set -eu
 
