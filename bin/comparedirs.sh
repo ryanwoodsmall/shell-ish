@@ -26,29 +26,29 @@ done
 d1files=( "$(cd "${d1}" ; find . -type f -o -type l | sort | sed 's#^\./##g')" )
 d2files=( "$(cd "${d2}" ; find . -type f -o -type l | sort | sed 's#^\./##g')" )
 
-declare -A d1sha256 d2sha256
+declare -A d1cont d2cont
 
 for file in ${d1files[@]} ${d2files[@]} ; do
-  d1sha256["${file}"]=""
-  d2sha256["${file}"]=""
+  d1cont["${file}"]=""
+  d2cont["${file}"]=""
 done
 
 for d1file in ${d1files[@]} ; do
-  d1sha256["${d1file}"]="$(sha256sum "${d1}/${d1file}" | awk '{print $1}')"
+  d1cont["${d1file}"]="1"
 done
 for d2file in ${d2files[@]} ; do
-  d2sha256["${d2file}"]="$(sha256sum "${d2}/${d2file}" | awk '{print $1}')"
+  d2cont["${d2file}"]="1"
 done
 
 for file in $(echo ${d1files[@]} ${d2files[@]} | tr ' ' '\n' | sort -u) ; do
-  if [ -z "${d2sha256[${file}]}" ] ; then
+  if [ -z "${d2cont[${file}]}" ] ; then
     echo "Only in ${d1}: ${file}"
     continue
-  elif [ -z "${d1sha256[${file}]}" ] ; then
+  elif [ -z "${d1cont[${file}]}" ] ; then
     echo "Only in ${d2}: ${file}"
     continue
   fi
-  if [ "${d1sha256[${file}]}" != "${d2sha256[${file}]}" ] ; then
+  if ! $(cmp -s "${d1}/${file}" "${d2}/${file}" >/dev/null 2>&1) ; then
     echo "Files ${d1}/${file} and ${d2}/${file} differ"
   fi
 done | tr -s '/'
