@@ -28,8 +28,8 @@ for i in ${!branches[@]} ; do
   for r in ${remotes[@]} ; do
     branches[${i}]="${branches[${i}]#remotes/${r}/}"
   done
-  # rip off origin/
-  if [[ ${branches[${i}]} =~ origin/ ]] ; then
+  # rip off ^origin/
+  if [[ ${branches[${i}]} =~ ^origin/ ]] ; then
     branches[${i}]="${branches[${i}]#origin/}"
   fi
   # indicate unique branch name with a key
