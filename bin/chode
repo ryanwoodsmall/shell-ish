@@ -47,8 +47,7 @@ while getopts :hHLPR opt ; do
     R) chown_opts="${chown_opts} -R"
        chmod_opts="${chmod_opts} -R"
        ;;
-    [?]) echo "no such option"
-         usage
+    [?]) failexit
          ;;
   esac
 done
