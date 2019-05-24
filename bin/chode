@@ -1,16 +1,77 @@
 #!/bin/sh
 
 #
-# wrapper around chown+chmod
-#  chown: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/chown.html
+# wrapper around chown+chmod+chgrp
+#  chgrp: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/chgrp.html
 #  chmod: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/chmod.html
+#  chown: http://pubs.opengroup.org/onlinepubs/9699919799/utilities/chown.html
 #
 # options defined by posix
-#  chown: -h -R -H -L -P
+#  chgrp: -h -H -L -P -R
 #  chmod: -R
+#  chown: -h -H -L -P -R
 #
 # usage:
 #  chode -R user:group:mode file|directory
 #
+# don't really call chgrp, chown can manage, but doesn't hurt to have the option
+#
 
-:
+set -eu
+
+usage() {
+  echo "usage: chode [-hHLPR] owner:group:mode file ..."
+}
+
+failexit() {
+  usage
+  exit 1
+}
+
+if [ ${#} -eq 0 ] ; then
+  failexit
+fi
+
+chown_opts=""
+chmod_opts=""
+while getopts :hHLPR opt ; do
+  case "${opt}" in
+    h) chown_opts="${chown_opts} -h"
+       ;;
+    H) chown_opts="${chown_opts} -H"
+       ;;
+    L) chown_opts="${chown_opts} -L"
+       ;;
+    P) chown_opts="${chown_opts} -P"
+       ;;
+    R) chown_opts="${chown_opts} -R"
+       chmod_opts="${chmod_opts} -R"
+       ;;
+    [?]) echo "no such option"
+         usage
+         ;;
+  esac
+done
+
+shift `expr ${OPTIND} - 1`
+
+if [ ${#} -lt 2 ] ; then
+  failexit
+fi
+if ! `echo ${1} | grep -q '^.*:.*:.*$'` ; then
+  failexit
+fi
+
+chown_user=`echo ${1} | cut -f1 -d:`
+chown_group=`echo ${1} | cut -f2 -d:`
+chmod_mode=`echo ${1} | cut -f3 -d:`
+
+if [ "x${chown_user}" == "x" -o "x${chown_group}" == "x" -o "x${chmod_mode}" == "x" ] ; then
+  failexit
+fi
+shift
+
+for f in ${@} ; do
+  chown ${chown_opts} ${chown_user}:${chown_group} ${f}
+  chmod ${chmod_opts} ${chmod_mode} ${f}
+done
