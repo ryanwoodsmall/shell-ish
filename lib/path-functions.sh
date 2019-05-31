@@ -25,16 +25,15 @@ append_path() {
 
 # add $1 to beginning of path
 prepend_path() {
-  in_path "${1}" || \
-    export PATH="${1}:${PATH}"
+  export PATH="${1}:${PATH}"
 }
 
 # remove $1 from $PATH
 remove_path() {
   in_path "${1}" && \
-    export PATH=$(echo ${PATH} | \
-    tr ':' '\n' | \
-    grep -v ^"`chomp_trailing_slash ${1}`"$ | \
-    tr '\n' ':' | \
-    sed 's#:$##g')
+    export PATH=$(echo ${PATH} \
+                  | tr ':' '\n' \
+                  | grep -v ^"`chomp_trailing_slash ${1}`"$ \
+                  | tr '\n' ':' \
+                  | sed 's#:$##g')
 }
