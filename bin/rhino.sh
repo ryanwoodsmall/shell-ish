@@ -2,11 +2,11 @@
 
 instdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-rhinover="1.7.10"
+rhinover="1.7.11"
 rhinouri="http://central.maven.org/maven2/org/mozilla/rhino/${rhinover}/rhino-${rhinover}.jar"
 rhinofile="$(basename ${rhinouri})"
 rhinoclass="org.mozilla.javascript.tools.shell.Main"
-rhinosha256sum="38eb3000cf56b8c7559ee558866a768eebcbf254174522d6404b7f078f75c2d4"
+rhinosha256sum="1514cf6fbcda690bfea81e51f0ddc36110bfebfeedfa42c4e5aa97cc0772d130"
 
 jlinever="2.14.6"
 jlineuri="http://central.maven.org/maven2/jline/jline/${jlinever}/jline-${jlinever}.jar"
