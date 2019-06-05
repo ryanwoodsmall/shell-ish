@@ -51,8 +51,8 @@ docker exec -it --user root "${jenkins_name}" usermod -a -G "${docker_group}" "$
 docker exec -it --user root "${jenkins_name}" curl -kLo "${docker_script}" "${docker_url}"
 docker exec -it --user root "${jenkins_name}" env CHANNEL=stable bash "${docker_script}"
 
-if ! $(docker logs "${jenkins_name}" | grep -q "Jenkins initial setup is required") ; then
-  if $(docker logs "${jenkins_name}" | grep -q "Jenkins is fully up and running") ; then
+if ! $(docker logs "${jenkins_name}" 2>&1 | grep -q "Jenkins initial setup is required") ; then
+  if $(docker logs "${jenkins_name}" 2>&1 | grep -q "Jenkins is fully up and running") ; then
     echo "restarting ${jenkins_name}"
     docker restart "${jenkins_name}"
   fi
