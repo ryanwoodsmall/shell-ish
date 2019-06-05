@@ -35,6 +35,8 @@ docker pull "${jenkins_image}"
 docker run \
   --detach \
   --name "${jenkins_name}" \
+  --env JENKINS_OPTS="--sessionEviction=-1 --sessionTimeout=$((366*24*60))" \
+  --env JAVA_OPTS="-DexecutableWar.jetty.disableCustomSeesionIdCookieName=true -DexecutableWar.jetty.sessionIdCookieName=JSESSIONID.$(hostname -s)" \
   --network host \
   --privileged \
   --volume "${jenkins_home_vol}:${jenkins_home_mount}" \
