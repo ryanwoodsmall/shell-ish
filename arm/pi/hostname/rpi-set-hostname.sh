@@ -9,14 +9,16 @@ needrestart=0
 hnpref="$(xargs -0 echo < /proc/device-tree/model | tr A-Z a-z | sed 's/raspberry/r/g;s/model.*//g;s/ //g')"
 mac="$(cat /sys/class/net/${nic}/address | tr -d :)"
 
+defaulthostname="raspberrypi"
 newhostname="${hnpref}-${mac}"
 
-if $(grep -q '^raspberrypi$' ${hnf}) ; then
+if ! $(grep -q "^${newhostname}$" ${hnf}) ; then
   needrestart=1
 fi
 
 sed -i "/^${loopback} /d" ${hf}
-sed -i '/^127.*raspberrypi$/d' ${hf}
+sed -i "/${newhostname}$/d" ${hf}
+sed -i "/^127.*${defaulthostname}$/d" ${hf}
 echo "${loopback} ${newhostname}" >> ${hf}
 echo ${newhostname} > ${hnf}
 
