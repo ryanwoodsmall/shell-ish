@@ -12,6 +12,8 @@ declare -a names
 declare -a starts
 declare -a ends
 
+# XXX - the recovery.conf file is referenced in linux_recovery.sh
+# XXX - probably need to get it from there instead of hard-coding it here
 ru="https://dl.google.com/dl/edgedl/chromeos/recovery"
 rf="recovery.conf"
 rs="${ru}/linux_recovery.sh"
