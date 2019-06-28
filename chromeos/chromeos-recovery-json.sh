@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+#
+# downloads and reads a Chrome OS recovery.conf file
+# generates a JSON representation of the machine recovery
+#
 
 set -eu
 
@@ -14,9 +19,11 @@ rc="${ru}/${rf}?source=${rs##*/}"
 
 of="/tmp/${rf}"
 
+# grab recovery.conf file
 curl -k -L -f -s -o "${of}" "${rc}"
 dos2unix "${of}" >/dev/null 2>&1
 
+# read the file into an array of lines with one extra terminal line
 n=0
 while IFS="$(printf '\n')" read -r l ; do
   f[${n}]="${l}"
@@ -24,6 +31,7 @@ while IFS="$(printf '\n')" read -r l ; do
 done < "${of}"
 f[${n}]=""
 
+# generate a list of board names (mostly for a count) with stanza start/end lines
 n=0
 for l in ${!f[@]} ; do
   if [[ ${f[${l}]} =~ ^name= ]] ; then
@@ -38,47 +46,44 @@ for l in ${!f[@]} ; do
 done
 ends[$((${n}-1))]="${l}"
 
-echo "["
-echo "  {"
-for n in $(seq 0 $((${starts[0]}-1))) ; do
-  line="${f[${n}]}"
-  # XXX - dupe, make it a function
+# given a line number, dump a json substring with one-line look-ahead to see if we still have data to parse
+# probably need to check in caller if next line is starts for next name?
+function format_kv() {
+  o="${1}"
+  line="${f[${o}]}"
   if [[ ${line} =~ = ]] ; then
-      k="${line%%=*}"
-      v="${line#${k}=}"
-      echo -n '    "'"${k}"'": "'"${v}"'"'
-      if [[ ${f[$((${n}+1))]} =~ = ]] ; then
-        echo ","
-      else
-        echo
-      fi
-  fi
-done
-echo "  },"
-for n in ${!names[@]} ; do
-  echo "  {"
-  for l in $(seq ${starts[${n}]} ${ends[${n}]}) ; do
-    line="${f[${l}]}"
-    if [[ ${line} =~ = ]] ; then
       k="${line%%=*}"
       v="${line#${k}=}"
       v="${v//\"/}"
       v="${v//\\/}"
       echo -n '    "'"${k}"'": "'"${v}"'"'
-      if [ ${l} -lt ${ends[${n}]} ] ; then
-        if [[ ${f[$((${l}+1))]} =~ = ]] ; then
-          echo ","
-        else
-          echo
-        fi
+      if [[ ${f[$((${o}+1))]} =~ = ]] ; then
+        echo ','
+      else
+        echo
       fi
-    fi
+  fi
+}
+
+# print out the json array
+echo '['
+echo '  {'
+# non-board recovery_tool_ stuff in a single object
+for n in $(seq 0 $((${starts[0]}-1))) ; do
+  format_kv "${n}"
+done
+echo '  },'
+# and every board from recovery.conf gets its own object
+for n in ${!names[@]} ; do
+  echo '  {'
+  for l in $(seq ${starts[${n}]} ${ends[${n}]}) ; do
+    format_kv "${l}"
   done
-  echo -n "  }"
+  echo -n '  }'
   if [ ${n} -lt $((${#names[@]}-1)) ] ; then
-    echo ","
+    echo ','
   else
     echo
   fi
 done
-echo "]"
+echo ']'
