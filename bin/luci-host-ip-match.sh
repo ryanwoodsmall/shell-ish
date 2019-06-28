@@ -2,7 +2,7 @@
 
 #
 # use openwrt/lede luci json rpc to get ip(s) matching a pattern
-# 
+#
 #   https://github.com/openwrt/luci/wiki/JsonRpcHowTo
 #
 # i.e., use tmux-nodes to ssh as "pi" user

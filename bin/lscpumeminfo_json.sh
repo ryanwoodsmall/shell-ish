@@ -33,4 +33,4 @@ jsonprogsnum="${#jsonprogs[@]}"
     echo
   done
   echo '}'
-} | jq -r . 
+} | jq -r .

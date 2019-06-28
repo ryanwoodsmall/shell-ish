@@ -7,7 +7,7 @@
 #
 # alpine chroot stuff:
 #  https://wiki.alpinelinux.org/wiki/Installing_Alpine_Linux_in_a_chroot
-#  https://github.com/alpinelinux/alpine-chroot-install  
+#  https://github.com/alpinelinux/alpine-chroot-install
 
 # options
 #  -n name
@@ -32,7 +32,7 @@
 #  start
 #   make bind mount directories
 #   do bind mounts
-#   start ssh? 
+#   start ssh?
 #  stop
 #   kill ssh?
 #   unmount bind mounts
@@ -268,7 +268,7 @@ function chrstop() {
   mount | grep "${chrdir}" | awk '{print $3}' | tac | while read -r bm ; do
     scriptecho "attempting unmount of ${bm}"
     umount -f "${bm}"
-  done 
+  done
 }
 
 # startssh

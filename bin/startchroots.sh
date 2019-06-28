@@ -7,7 +7,7 @@
 # - IPTABLES should probably be off
 # - assumes CentOS (RHEL) style chroots (Live CD/DVD work)
 # - unsquashfs /mnt/iso/LiveOS/squashfs.img # from the CentOS Live ISO
-#   - for RHEL7, an updated squashfs-tools is needed on RHEL6 OS 
+#   - for RHEL7, an updated squashfs-tools is needed on RHEL6 OS
 # - mount the ext3fs.img ro,loop to /mnt/img
 # - rsync /mnt/img to /data/chroot/${CHROOTARCH}-centos-${RHELVER} e.g.:
 #   - CentOS 5 i386 : /data/chroot/i686-centos-5
@@ -15,7 +15,7 @@
 #   - CentOS 5 x86_64 : /data/chroot/x86_64-centos-5
 #   - CentOS 6 x86_64 : /data/chroot/x86_64-centos-6
 #   - CentOS 7 x86_64 : /data/chroot/x86_64-centos-7
-# - this assumes a user called "user" exists and has generated and exchanged SSH keys 
+# - this assumes a user called "user" exists and has generated and exchanged SSH keys
 # - this assumes an SSH server is running on the host
 # - SSH servers are started for each chroot starting at port 22222
 # - you should be able to SSH in as "user" assuming your keys previously worked

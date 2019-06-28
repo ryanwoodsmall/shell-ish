@@ -9,7 +9,7 @@ nptr="name"
 
 declare -A ${name}aa
 # this works too:
-#   declare -A ${!nptr}aa 
+#   declare -A ${!nptr}aa
 
 eval ${name}aa["one"]=1
 eval ${name}aa["zero"]=0

@@ -13,7 +13,7 @@ usage () {
 
 progname=`basename $0`
 
-if [ $# -ne 4 ] ; then 
+if [ $# -ne 4 ] ; then
 	usage "$progname"
 	exit 1
 fi

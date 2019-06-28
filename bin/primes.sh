@@ -27,6 +27,6 @@ for (( i=$((${start}+1)) ; i <= ${1} ; i++ )) ; do
   }
   done
   test ${broke} -eq 0 && primes+=" ${i}"
-done 
+done
 
 echo "${primes}"

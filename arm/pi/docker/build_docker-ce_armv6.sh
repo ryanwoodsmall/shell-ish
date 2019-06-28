@@ -33,7 +33,7 @@ find . -type f | \
   xargs grep -l 'FROM.*armhf/debian:jessie' 2>/dev/null | \
   xargs sed -i '/armhf\/debian:jessie/ s/\(.*FROM.*\)armhf\/debian:jessie/\1 resin\/rpi-raspbian:jessie/g'
 
-# remove "seccomp" from DOCKER_BUILDTAGS 
+# remove "seccomp" from DOCKER_BUILDTAGS
 find . -type f | \
   grep -v \\.git | \
   xargs grep -l 'DOCKER_BUILDTAGS.*seccomp' 2>/dev/null | \

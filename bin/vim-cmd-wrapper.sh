@@ -2,7 +2,7 @@
 
 VIMCMD="vmware-vim-cmd"
 
-hash ${VIMCMD}  2>/dev/null 
+hash ${VIMCMD}  2>/dev/null
 if [ $? -ne 0 ] ; then
 	echo "${VIMCMD} is necessary" 1>&2
 	exit 1
