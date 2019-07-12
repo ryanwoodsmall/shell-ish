@@ -21,6 +21,7 @@ apt-get purge -y \
   python3-libapparmor
 apt-get autoremove -y
 apt-get update
+apt-get --allow-releaseinfo-change update
 apt-get install -y \
   gcc \
   g++ \
