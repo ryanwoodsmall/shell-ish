@@ -5,6 +5,9 @@ whoami | grep -q '^root$' || {
   exit 1
 }
 
+echo 1 \
+| tee /sys/devices/system/cpu/cpu?/online >/dev/null 2>&1
+
 echo performance \
 | tee /sys/devices/system/cpu/cpu?/cpufreq/scaling_governor >/dev/null 2>&1
 
