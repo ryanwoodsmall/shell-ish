@@ -67,7 +67,7 @@ instdir="/usr/local"
 
 # system/bind mount stuff
 erc="etc/resolv.conf"
-bmds=( dev dev/pts dev/shm proc sys )
+bmds=( dev dev/pts dev/shm proc sys lib/modules )
 bmfs=( ${erc} )
 
 # help/usage options
