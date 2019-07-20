@@ -67,7 +67,7 @@ instdir="/usr/local"
 
 # system/bind mount stuff
 erc="etc/resolv.conf"
-bmds=( dev dev/pts dev/shm proc sys lib/modules )
+bmds=( dev dev/mapper dev/pts dev/shm lib/modules proc sys )
 bmfs=( ${erc} )
 
 # help/usage options
@@ -213,6 +213,15 @@ function checksum() {
   fi
 }
 
+# check if chroot dir exists
+function chrdircheck() {
+  test -e "${chrdir}" || {
+    scriptecho "${chrdir} chroot does not seem to exist"
+    return 1
+  }
+  return 0
+}
+
 # setup
 function chrsetup() {
   test -e "${chrdir}" && {
@@ -222,10 +231,7 @@ function chrsetup() {
   download
   checksum
   mkdir -p "${chrdir}"
-  test -e "${chrdir}" || {
-    scriptecho "it does not appear we can create ${chrdir}"
-    exit 1
-  }
+  chrdircheck || exit 1
   scriptecho "extracting ${dlfile} into ${chrdir}"
   tar --directory "${chrdir}" -zxf "${dlfile}"
   scriptecho "fixing up ${chrdir} and ${chrdir}/home perms"
@@ -247,19 +253,13 @@ function chrsetup() {
 
 # change password
 function chrchpass() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chroot "${chrdir}" /usr/bin/passwd root
 }
 
 # start
 function chrstart() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   for bm in ${bmds[@]} ${bmfs[@]} ; do
     mount | grep -q " ${chrdir}/${bm} " && {
       scriptecho "${chrdir}/${bm} already bind mounted"
@@ -272,10 +272,7 @@ function chrstart() {
 
 # stop
 function chrstop() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chrstopssh
   chrstopdocker
   mount | grep "${chrdir}" | awk '{print $3}' | tac | while read -r bm ; do
@@ -286,10 +283,7 @@ function chrstop() {
 
 # startssh
 function chrstartssh() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chrstart # should be safe to run
   mkdir -p "${chrdir}/etc/dropbear"
   test -e "${chrdir}/etc/dropbear" || {
@@ -306,10 +300,7 @@ function chrstartssh() {
 
 # stop ssh in the chroot
 function chrstopssh() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chroot "${chrdir}" test -e /var/run/dropbear.pid \
   && kill -KILL $(chroot "${chrdir}" cat /var/run/dropbear.pid) 2>/dev/null
   sshpid="$(chroot "${chrdir}" /usr/bin/fuser -n tcp ${sshport} 2>/dev/null)"
@@ -320,10 +311,7 @@ function chrstopssh() {
 
 # start docker
 function chrstartdocker() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chrstart
   test -e "${chrdir}/usr/bin/dockerd" || {
     scriptecho "installing dropbear"
@@ -341,10 +329,7 @@ function chrstartdocker() {
 
 # stop docker
 function chrstopdocker() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chroot "${chrdir}" test -e /var/run/docker.pid \
   && kill -KILL $(chroot "${chrdir}" cat /var/run/docker.pid) 2>/dev/null
   dockerpid="$(chroot "${chrdir}" /usr/bin/fuser /var/run/docker.sock 2>/dev/null)"
@@ -355,10 +340,7 @@ function chrstopdocker() {
 
 # update/upgrade via apk
 function chrupdate() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   chrstart # should be safe to run
   chroot "${chrdir}" /sbin/apk update
   chroot "${chrdir}" /sbin/apk upgrade
@@ -366,10 +348,7 @@ function chrupdate() {
 
 # just dump our bind mount status for now
 function chrstatus() {
-  test -e "${chrdir}" || {
-    scriptecho "${chrdir} chroot does not seem to exist"
-    exit 1
-  }
+  chrdircheck || exit 1
   for bm in ${bmds[@]} ${bmfs[@]} ; do
     mount | grep -q " ${chrdir}/${bm} " || {
       scriptecho "${chrdir}/${bm} does not appear to be bind mounted"
