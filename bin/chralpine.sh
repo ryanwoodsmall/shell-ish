@@ -100,12 +100,12 @@ function usage() {
   echo "  by default an alpine ${alpver} chroot will be installed at ${instdir}/${chrname}"
   echo
   echo "options:"
-  for opt in ${!opt_help[@]} ; do
+  for opt in $(echo ${!opt_help[@]} | tr ' ' '\n' | sort) ; do
     echo "  -${opt} ${opt_help[${opt}]}"
   done
   echo
   echo "commands:"
-  for cmd in $(echo ${!cmd_help[@]} | tr \  \\n | sort) ; do
+  for cmd in $(echo ${!cmd_help[@]} | tr ' ' '\n' | sort) ; do
     echo "  ${cmd} : ${cmd_help[${cmd}]}"
   done
   echo
