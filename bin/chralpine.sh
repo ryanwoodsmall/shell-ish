@@ -80,6 +80,7 @@ opt_help["p"]="##### : dropbear ssh port for the chroot, default '${sshport}'"
 # and commands
 declare -A cmd_help
 cmd_help["setup"]="download, extract and configure a new chroot"
+cmd_help["chpass"]="change chroot root user password"
 cmd_help["start"]="setup chroot bind mounts"
 cmd_help["stop"]="unmount chroot bind mounts"
 cmd_help["startssh"]="start dropbear ssh in the chroot"
@@ -242,6 +243,15 @@ function chrsetup() {
   echo
 }
 
+# change password
+function chrchpass() {
+  test -e "${chrdir}" || {
+    scriptecho "${chrdir} chroot does not seem to exist"
+    exit 1
+  }
+  chroot "${chrdir}" /usr/bin/passwd root
+}
+
 # start
 function chrstart() {
   test -e "${chrdir}" || {
@@ -283,9 +293,9 @@ function chrstartssh() {
     scriptecho "could not create dropbear keys directory in chroot"
     exit 1
   }
-  chroot "${chrdir}" /sbin/apk update
   test -e "${chrdir}/usr/sbin/dropbear" || {
     scriptecho "installing dropbear"
+    chroot "${chrdir}" /sbin/apk update
     chroot "${chrdir}" /sbin/apk add dropbear dropbear-scp dropbear-dbclient dropbear-convert dropbear-ssh psmisc
   }
   chroot "${chrdir}" /usr/sbin/dropbear -B -R -p ${sshport}
@@ -330,6 +340,9 @@ function chrstatus() {
 case ${command} in
   setup)
     chrsetup
+    ;;
+  chpass)
+    chrchpass
     ;;
   start)
     chrstart
