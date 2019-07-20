@@ -105,7 +105,7 @@ function usage() {
   done
   echo
   echo "commands:"
-  for cmd in ${!cmd_help[@]} ; do
+  for cmd in $(echo ${!cmd_help[@]} | tr \  \\n | sort) ; do
     echo "  ${cmd} : ${cmd_help[${cmd}]}"
   done
   echo
