@@ -85,6 +85,8 @@ cmd_help["start"]="setup chroot bind mounts"
 cmd_help["stop"]="unmount chroot bind mounts"
 cmd_help["startssh"]="start dropbear ssh in the chroot"
 cmd_help["stopssh"]="stop dropbear ssh in the chroot"
+cmd_help["startdocker"]="start docker in the chroot"
+cmd_help["stopdocker"]="stop docker in the chroot"
 cmd_help["status"]="dump bind mount status for the chroot"
 cmd_help["update"]="upgrade packages in existing chroot via apk"
 
@@ -275,6 +277,7 @@ function chrstop() {
     exit 1
   }
   chrstopssh
+  chrstopdocker
   mount | grep "${chrdir}" | awk '{print $3}' | tac | while read -r bm ; do
     scriptecho "attempting unmount of ${bm}"
     umount -f "${bm}"
@@ -307,9 +310,46 @@ function chrstopssh() {
     scriptecho "${chrdir} chroot does not seem to exist"
     exit 1
   }
+  chroot "${chrdir}" test -e /var/run/dropbear.pid \
+  && kill -KILL $(chroot "${chrdir}" cat /var/run/dropbear.pid) 2>/dev/null
   sshpid="$(chroot "${chrdir}" /usr/bin/fuser -n tcp ${sshport} 2>/dev/null)"
   if [ ! -z "${sshpid}" ] ; then
     kill -KILL ${sshpid}
+  fi
+}
+
+# start docker
+function chrstartdocker() {
+  test -e "${chrdir}" || {
+    scriptecho "${chrdir} chroot does not seem to exist"
+    exit 1
+  }
+  chrstart
+  test -e "${chrdir}/usr/bin/dockerd" || {
+    scriptecho "installing dropbear"
+    chroot "${chrdir}" /sbin/apk update
+    chroot "${chrdir}" /sbin/apk add docker curl wget psmisc
+  }
+  mkdir -p "${chrdir}/opt/docker/scripts"
+  test -e "${chrdir}/opt/docker/scripts/cgroupfs-mount" || {
+    chroot "${chrdir}" wget -P /opt/docker/scripts/ https://github.com/tianon/cgroupfs-mount/raw/master/cgroupfs-mount
+  }
+  chmod 755 "${chrdir}/opt/docker/scripts/cgroupfs-mount"
+  chroot "${chrdir}" /opt/docker/scripts/cgroupfs-mount
+  chroot "${chrdir}" /usr/bin/dockerd -s vfs >"${chrdir}/tmp/docker.log" 2>&1 &
+}
+
+# stop docker
+function chrstopdocker() {
+  test -e "${chrdir}" || {
+    scriptecho "${chrdir} chroot does not seem to exist"
+    exit 1
+  }
+  chroot "${chrdir}" test -e /var/run/docker.pid \
+  && kill -KILL $(chroot "${chrdir}" cat /var/run/docker.pid) 2>/dev/null
+  dockerpid="$(chroot "${chrdir}" /usr/bin/fuser /var/run/docker.sock 2>/dev/null)"
+  if [ ! -z "${dockerpid}" ] ; then
+    kill -KILL ${dockerpid}
   fi
 }
 
@@ -355,6 +395,12 @@ case ${command} in
     ;;
   stopssh)
     chrstopssh
+    ;;
+  startdocker)
+    chrstartdocker
+    ;;
+  stopdocker)
+    chrstopdocker
     ;;
   status)
     chrstatus
