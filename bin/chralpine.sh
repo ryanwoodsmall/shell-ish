@@ -215,7 +215,7 @@ function checksum() {
 
 # check if chroot dir exists
 function chrdircheck() {
-  test -e "${chrdir}" || {
+  test -e "${chrdir}/etc/alpine-release" || {
     scriptecho "${chrdir} chroot does not seem to exist"
     return 1
   }
@@ -224,7 +224,7 @@ function chrdircheck() {
 
 # setup
 function chrsetup() {
-  test -e "${chrdir}" && {
+  test -e "${chrdir}/etc/alpine-release" && {
     scriptecho "${chrdir} already exists; cowardly failing"
     exit 1
   }
