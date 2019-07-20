@@ -225,13 +225,16 @@ function chrdircheck() {
 # setup
 function chrsetup() {
   test -e "${chrdir}/etc/alpine-release" && {
-    scriptecho "${chrdir} already exists; cowardly failing"
+    scriptecho "${chrdir}/etc/alpine-release already exists; cowardly failing"
     exit 1
   }
   download
   checksum
   mkdir -p "${chrdir}"
-  chrdircheck || exit 1
+  test -e "${chrdir}" || {
+    scriptecho "${chrdir} chroot does not seem to exist"
+    exit 1
+  }
   scriptecho "extracting ${dlfile} into ${chrdir}"
   tar --directory "${chrdir}" -zxf "${dlfile}"
   scriptecho "fixing up ${chrdir} and ${chrdir}/home perms"
