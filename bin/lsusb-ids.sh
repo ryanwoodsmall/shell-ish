@@ -15,10 +15,10 @@ lsusb \
   i="${i%% *}"
   m="${i%:*}"
   d="${i#*:}"
-  h="${u%% ${m}:${d}*}"
+  h="${u%%: *}"
   sed -n "/^${m}/,/^[0-9a-f]\{4\}  /p" /tmp/usb.ids \
   | egrep "^(${m}  |[[:blank:]]${d}  )" \
   | tr -d '\t' \
   | sed "s/^\(${m}\|${d}\)  //g" \
-  | xargs echo ${h} ${m}:${d}
+  | xargs echo "${h}: ID ${m}:${d}"
 done
