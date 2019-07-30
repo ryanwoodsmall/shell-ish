@@ -10,12 +10,15 @@ test -e /tmp/usb.ids || {
 }
 
 lsusb \
-| cut -f2- -d: \
-| sed 's/^ ID //g' \
 | while IFS="$(printf '\n')" read -r u ; do
-  i="${u%% *}"
+  i="${u#*: ID }"
+  i="${i%% *}"
   m="${i%:*}"
   d="${i#*:}"
+  h="${u%% ${m}:${d}*}"
   sed -n "/^${m}/,/^[0-9a-f]\{4\}  /p" /tmp/usb.ids \
-  | egrep "^(${m}  |[[:blank:]]${d}  )"
+  | egrep "^(${m}  |[[:blank:]]${d}  )" \
+  | tr -d '\t' \
+  | sed "s/^\(${m}\|${d}\)  //g" \
+  | xargs echo ${h} ${m}:${d}
 done
