@@ -47,6 +47,10 @@ docker run \
 echo "sleeping for ${sleep_time} seconds while jenkins starts"
 sleep "${sleep_time}"
 
+echo "installing some packages"
+docker exec -it --user root "${jenkins_name}" apt-get update
+docker exec -it --user root "${jenkins_name}" apt-get install -y file less lsof net-tools psmisc which
+
 echo "installing docker and restarting jenkins"
 docker exec -it --user root "${jenkins_name}" groupadd -g "${docker_gid}" "${docker_group}"
 docker exec -it --user root "${jenkins_name}" usermod -a -G "${docker_group}" "${jenkins_user}"
