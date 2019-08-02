@@ -6,7 +6,7 @@
 #
 
 test -e /tmp/usb.ids || {
-  wget -P /tmp/ http://www.linux-usb.org/usb.ids
+  wget -P /tmp/ http://www.linux-usb.org/usb.ids 1>&2
 }
 
 lsusb \
