@@ -50,4 +50,4 @@ s=${rem}
       echo "${!v}${v}"
     fi
   done
-} | xargs echo
+} | xargs echo | tr ' ' ','
