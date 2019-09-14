@@ -3,6 +3,9 @@
 #
 # download, build, and run some benchmarks
 #
+# run, showing lowest (single-thread) and highest multi-threaded scores:
+#   curl -kLs https://github.com/ryanwoodsmall/shell-ish/raw/master/bin/coremark.sh | bash 2>/dev/null | sed -n '1p;$p'
+#
 
 set -eu
 
