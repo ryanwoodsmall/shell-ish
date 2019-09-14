@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 
-: ${c:="crosware_busybox_httpd_data_http"}
-: ${d:="/data/http"}
-: ${i:="ryanwoodsmall/crosware:latest"}
-: ${p:="80"}
+set -eu
 
-docker pull "${i}"
-docker stop "${c}"
-docker kill "${c}"
-docker rm "${c}"
+: ${d:="https://github.com/ryanwoodsmall/dockerfiles/raw/master/crosware/webserver/Dockerfile"}
+: ${p:="80"}
+: ${h:="/data/http"}
+: ${n:="crosware_busybox_httpd${h//\//_}"}
+: ${i:="${n}"}
+
+docker build --tag "${i}" "${d}"
+docker stop "${n}" || true
+docker kill "${n}" || true
+docker rm "${n}" || true
 docker run \
-  -d \
-  --name "${c}" \
+  --detach \
+  --env BUSYBOX_HTTPD_PORT="${p}" \
+  --env BUSYBOX_HTTPD_HOME="${h}" \
+  --name "${n}" \
+  --publish "${p}:${p}" \
   --restart always \
-  -v "${d}:${d}:ro" \
-  -p "${p}:${p}" \
-    "${i}" \
-      busybox httpd -f -vv -h "${d}" -p "${p}"
+  --volume "${h}:${h}:ro" \
+    "${i}"
