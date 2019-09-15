@@ -55,7 +55,7 @@ cmf="${cmd}.zip"
 cmu="https://github.com/eembc/coremark/archive/master.zip"
 
 declare -A bmflags bmtimes
-bmflagscommon="LFLAGS_END=\"-lpthread -static\""
+bmflagscommon="LFLAGS_END=\"-lpthread -lc -lgcc -lrt -static\""
 bmflagsthreads="-DMULTITHREAD=$(nproc)"
 bmflags['single']="${bmflagscommon}"
 bmflags['multi-fork']="XCFLAGS=\"${bmflagsthreads} -DUSE_FORK\" ${bmflagscommon}"
@@ -72,7 +72,7 @@ for bmprof in ${bmprofs[@]} ; do
   make clean >/dev/null 2>&1
   echo -n "${bmprof}: " 1>&2
   st="$(date +%s)"
-  eval make ${bmflags[${bmprof}]} > ${bmprof}-make.out 2>&1
+  eval "make ${bmflags[${bmprof}]}" > ${bmprof}-make.out 2>&1
   et="$(date +%s)"
   rt="$((${et}-${st}))s"
   echo "${rt}" 1>&2
