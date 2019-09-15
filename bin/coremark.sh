@@ -6,6 +6,38 @@
 # run, showing lowest (single-thread) and highest multi-threaded scores:
 #   curl -kLs https://github.com/ryanwoodsmall/shell-ish/raw/master/bin/coremark.sh | bash 2>/dev/null | sed -n '1p;$p'
 #
+# compare a bunch of output (in /tmp/coremark-hostname.out), format with miller:
+#   set -eu
+#   
+#   declare -a es=()
+#   declare -A scores=() types=() hosts=()
+#   
+#   for f in /tmp/coremark-*.out ; do
+#     h="${f##*/}"
+#     h="${h##coremark-}"
+#     h="${h%%.out}"
+#     e="$(cat ${f} | tr / : | cut -f1,4 -d: | sort | tr -d ' ' | tr : , | sed s/^/${h},/g)"
+#     es+=( "${e}" )
+#   done
+#   for e in ${es[@]} ; do
+#     h="${e%%,*}"
+#     t="${e%,*}"
+#     t="${t#*,}"
+#     s="${e##*,}"
+#     hosts["${h}"]=1
+#     types["${t}"]=1
+#     scores["${h}:${t}"]="${s}"
+#   done
+#   hostlist="$(echo ${!hosts[@]} | tr ' ' '\n' | sort | xargs echo)"
+#   typelist="$(echo ${!types[@]} | tr ' ' '\n' | sort -r | xargs echo)"
+#   echo "host,${typelist// /,}"
+#   for h in ${hostlist} ; do
+#     echo -n "${h},"
+#     for t in ${typelist} ; do
+#       echo -n "${scores[${h}:${t}]},"
+#     done | sed 's/,$//g' | xargs echo
+#   done | mlr --icsv --opprint --barred cat
+#
 
 set -eu
 
