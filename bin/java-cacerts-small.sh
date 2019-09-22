@@ -3,12 +3,6 @@
 #
 # dump java keystore to a pem for system openssl usage
 #
-# https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/
-#   keytool -importkeystore -srckeystore myapp.jks -destkeystore myapp.p12 -srcalias myapp-dev -srcstoretype jks -deststoretype pkcs12
-#   openssl pkcs12 -in myapp.p12 -out myapp.pem
-#
-# should use fewer p12/pem temp files but keytool and openssl are relatively unfriendly
-#
 
 set -eu
 set -o pipefail
