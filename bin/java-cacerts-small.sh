@@ -22,7 +22,7 @@ function failexit() {
   exit 1
 }
 
-for p in java jrunscript keytool openssl ; do
+for p in dos2unix java jrunscript keytool openssl unix2dos ; do
   hash ${p} >/dev/null 2>&1 || failexit "${p} not found"
 done
 
