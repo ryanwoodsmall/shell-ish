@@ -25,6 +25,11 @@ apt-get update
 apt-get install -y bc bridge-utils dc screen vim-nox
 #apt-get dist-upgrade -y
 
+# disable motd because it sucks
+sed -i.ORIG '/pam_motd/s/^/#/g' /etc/pam.d/{sshd,login}
+# ubuntu only
+test -e /etc/default/motd-news && sed -i.ORIG 's/ENABLED=0/ENABLED=1/g' /etc/default/motd-news
+
 # zram
 zramdeburl="https://mirrors.edge.kernel.org/ubuntu/pool/universe/z/zram-config/zram-config_0.5_all.deb"
 zramdebfile="$(basename ${zramdeburl})"
