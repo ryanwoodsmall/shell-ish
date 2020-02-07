@@ -18,4 +18,4 @@ rpm -qa | sort | while read -r p ; do
   echo $p
   rpm -qV $p
   echo
-done > /tmp/rpmverify.out
+done | tee /tmp/rpmverify.out
