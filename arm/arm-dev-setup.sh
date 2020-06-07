@@ -53,6 +53,9 @@ sed -i '/^# en_US.UTF-8/ s/^# //g' /etc/locale.gen
 sed -i 's/^# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
 locale-gen
 update-locale
+echo 'Etc/UTC' > /etc/timezone
+rm -f /etc/localtime
+ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
 cp /etc/rc.local /etc/rc.local.ORIG
 sed -i '/^exit/d' /etc/rc.local
 sed -i '/^scaling_governor/d' /etc/rc.local
