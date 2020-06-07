@@ -56,6 +56,11 @@ update-locale
 echo 'Etc/UTC' > /etc/timezone
 rm -f /etc/localtime
 ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
+if [ -e /etc/wpa_supplicant/wpa_supplicant.conf ] ; then
+  sed -i.ORIG '/^country=.*/d' /etc/wpa_supplicant/wpa_supplicant.conf
+  echo 'country=US' >> /etc/wpa_supplicant/wpa_supplicant.conf
+fi
+sed -i.ORIG 's/"gb"/"us"/g' /etc/default/keyboard
 cp /etc/rc.local /etc/rc.local.ORIG
 sed -i '/^exit/d' /etc/rc.local
 sed -i '/^scaling_governor/d' /etc/rc.local
