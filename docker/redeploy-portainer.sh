@@ -6,7 +6,7 @@ test -e ${datadir} || mkdir -p ${datadir}
 
 docker kill portainer
 docker rm --force portainer
-docker rmi --force portainer/portainer
+docker rmi --force portainer/portainer-ce
 docker \
   run \
   --name portainer \
@@ -16,4 +16,4 @@ docker \
   -v ${datadir}:/data \
   --privileged \
   --restart always \
-  portainer/portainer
+  portainer/portainer-ce
