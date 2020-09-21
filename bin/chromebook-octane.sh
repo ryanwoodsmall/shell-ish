@@ -8,7 +8,7 @@ for p in 'curl' 'mlr' ; do
 done
 
 curl -kLs https://zipso.net/chromebooks/output/chromebooks-all-zipso.csv \
-| sed 's#n/a#0#g;s#\*##g' \
+| sed 's#n/a#0#g;s#\*##g;s#,,$##g' \
 | mlr \
     --icsvlite \
     --opprint \
