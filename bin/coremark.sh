@@ -8,10 +8,8 @@
 #
 # compare a bunch of output (in /tmp/coremark-hostname.out), format with miller:
 #   set -eu
-#   
 #   declare -a es=()
 #   declare -A scores=() types=() hosts=()
-#   
 #   for f in /tmp/coremark-*.out ; do
 #     h="${f##*/}"
 #     h="${h##coremark-}"
