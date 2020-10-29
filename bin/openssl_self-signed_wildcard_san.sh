@@ -27,15 +27,16 @@ ST = MO
 L = St. Louis
 O = FakeCo, LLC
 OU = DevOps
-CN = *.domain.com
+CN = www.domain.com
 [v3_req]
 basicConstraints = CA:TRUE
 keyUsage = keyEncipherment, dataEncipherment, digitalSignature, keyCertSign
 extendedKeyUsage = serverAuth, clientAuth, emailProtection, codeSigning
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = domain.com
-DNS.2 = *.cloud.domain.com
+DNS.1 = www.domain.com
+DNS.2 = *.domain.com
+DNS.3 = *.cloud.domain.com
 EOF
 
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout san.pem -out san.pem -config san.cnf -extensions 'v3_req'
