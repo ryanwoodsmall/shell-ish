@@ -2,6 +2,10 @@
 #
 # https://support.citrix.com/article/CTX135602
 # https://geekflare.com/san-ssl-certificate/
+# https://devcenter.heroku.com/articles/ssl-certificate-self
+# https://security.stackexchange.com/questions/74345/provide-subjectaltname-to-openssl-directly-on-the-command-line
+# https://github.com/openssl/openssl/issues/3536
+# https://coderwall.com/p/b443ng/generating-a-self-signed-wildcard-certificate
 #
 # requires openssl 1.1.1+
 #
