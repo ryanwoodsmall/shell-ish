@@ -21,6 +21,7 @@ echo "running at $(date +%Y%m%d%H%M%S)" 1>&2
 
 n=0
 declare -A m2i i2m i2h h2i m2h h2m
+declare -a a
 
 while IFS= read l ; do
   a[${n}]="${l}"
