@@ -14,6 +14,10 @@ sudo systemctl stop unattended-upgrades.service
 sudo systemctl stop snapd.service
 
 sudo dpkg -l | sudo tee ~root/pkglist.initial
+sudo dpkg --remove unattended-upgrades
+sudo dpkg --remove snapd
+sudo dpkg --purge unattended-upgrades
+sudo dpkg --purge snapd
 sudo snap remove --purge lxd
 sudo snap remove --purge core18
 sudo snap remove --purge snapd
