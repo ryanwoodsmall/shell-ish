@@ -5,6 +5,10 @@
 # tested on a pi3, 64-bit
 # default user/pass: ubuntu/ubuntu
 #
+# XXX - additional user
+# XXX - ssh keys
+# XXX - hostname
+#
 
 sudo dpkg -l | sudo tee ~root/pkglist.initial
 sudo snap remove lxd
