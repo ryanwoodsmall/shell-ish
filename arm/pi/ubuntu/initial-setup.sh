@@ -10,6 +10,9 @@
 # XXX - hostname
 #
 
+sudo systemctl stop snapd.service
+sudo systemctl stop unattended-upgrades.service
+
 sudo dpkg -l | sudo tee ~root/pkglist.initial
 sudo snap remove --purge lxd
 sudo snap remove --purge core18
