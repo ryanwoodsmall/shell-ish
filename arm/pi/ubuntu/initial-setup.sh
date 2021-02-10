@@ -11,9 +11,9 @@
 #
 
 sudo dpkg -l | sudo tee ~root/pkglist.initial
-sudo snap remove lxd
-sudo snap remove core18
-sudo snap remove snapd
+sudo snap remove --purge lxd
+sudo snap remove --purge core18
+sudo snap remove --purge snapd
 sudo apt-get update
 sudo apt-get purge -y unattended-upgrades
 sudo apt-get purge -y bash-completion
