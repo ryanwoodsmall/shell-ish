@@ -25,6 +25,9 @@ sudo apt-get purge -y apparmor
 sudo apt-get purge -y sosreport
 sudo apt-get autoremove -y
 
+sudo sed -i.ORIG 's/ENABLED=1/ENABLED=0/g' $(sudo realpath /etc/default/motd-news)
+sudo sed -i.ORIG '/motd\.dynamic/s/^/#/g' $(sudo realpath /etc/pam.d/login /etc/pam.d/sshd)
+
 sudo groupadd -r docker
 sudo groupadd -r wheel
 sudo usermod -a -G docker ubuntu
