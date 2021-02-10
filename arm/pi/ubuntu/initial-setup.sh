@@ -25,6 +25,12 @@ sudo apt-get purge -y apparmor
 sudo apt-get purge -y sosreport
 sudo apt-get autoremove -y
 
+sudo apt-get update
+sudo apt-get dist-upgrade -y
+sudo apt full-upgrade -y
+sudo apt-get autoremove -y
+sync
+
 sudo sed -i.ORIG 's/ENABLED=1/ENABLED=0/g' $(sudo realpath /etc/default/motd-news)
 sudo sed -i.ORIG '/motd\.dynamic/s/^/#/g' $(sudo realpath /etc/pam.d/login /etc/pam.d/sshd)
 
@@ -50,8 +56,3 @@ curl -kLs https://get.docker.com/ | sudo env CHANNEL=stable bash
 sudo systemctl enable docker
 sudo systemctl restart docker
 
-sudo apt-get update
-sudo apt-get dist-upgrade -y
-sudo apt full-upgrade -y
-sudo apt-get autoremove -y
-sync
