@@ -8,13 +8,13 @@
 # XXX - additional user
 # XXX - ssh keys
 # XXX - hostname
-# XXX - Etc/UTC timezone/localtime
 #
 
 sudo systemctl stop unattended-upgrades.service
 sudo systemctl stop snapd.service
 
 sudo dpkg -l | sudo tee ~root/pkglist.initial
+
 sudo dpkg --remove unattended-upgrades
 sudo dpkg --remove snapd
 sudo dpkg --purge unattended-upgrades
@@ -22,6 +22,11 @@ sudo dpkg --purge snapd
 #sudo snap remove --purge lxd
 #sudo snap remove --purge core18
 #sudo snap remove --purge snapd
+
+rm -f /etc/localtime
+ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
+echo Etc/UTC > /etc/timezone
+
 sudo apt-get update
 sudo apt-get purge -y unattended-upgrades
 sudo apt-get purge -y bash-completion
@@ -37,6 +42,10 @@ sudo apt-get update
 sudo apt-get dist-upgrade -y
 sudo apt full-upgrade -y
 sudo apt-get autoremove -y
+sudo apt-get install -y net-tools
+sudo apt-get install -y screen
+sudo apt-get install -y tmux
+sudo apt-get install -y vim-nox
 sync
 
 sudo sed -i.ORIG 's/ENABLED=1/ENABLED=0/g' $(sudo realpath /etc/default/motd-news)
