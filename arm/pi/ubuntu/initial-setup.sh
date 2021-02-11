@@ -18,9 +18,9 @@ sudo dpkg --remove unattended-upgrades
 sudo dpkg --remove snapd
 sudo dpkg --purge unattended-upgrades
 sudo dpkg --purge snapd
-sudo snap remove --purge lxd
-sudo snap remove --purge core18
-sudo snap remove --purge snapd
+#sudo snap remove --purge lxd
+#sudo snap remove --purge core18
+#sudo snap remove --purge snapd
 sudo apt-get update
 sudo apt-get purge -y unattended-upgrades
 sudo apt-get purge -y bash-completion
