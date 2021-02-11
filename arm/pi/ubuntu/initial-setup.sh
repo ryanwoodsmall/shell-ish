@@ -42,6 +42,7 @@ sudo apt-get update
 sudo apt-get dist-upgrade -y
 sudo apt full-upgrade -y
 sudo apt-get autoremove -y
+sudo apt-get install -y ethtool
 sudo apt-get install -y net-tools
 sudo apt-get install -y screen
 sudo apt-get install -y tmux
