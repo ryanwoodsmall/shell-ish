@@ -8,6 +8,7 @@
 # XXX - additional user
 # XXX - ssh keys
 # XXX - hostname
+# XXX - Etc/UTC timezone/localtime
 #
 
 sudo systemctl stop unattended-upgrades.service
