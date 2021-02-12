@@ -8,6 +8,7 @@
 # XXX - additional user
 # XXX - ssh keys
 # XXX - hostname
+# XXX - visual bell in inputrc
 #
 
 sudo systemctl stop unattended-upgrades.service
