@@ -8,7 +8,6 @@
 # XXX - additional user
 # XXX - ssh keys
 # XXX - hostname
-# XXX - visual bell in inputrc
 #
 
 sudo systemctl stop unattended-upgrades.service
@@ -44,6 +43,7 @@ sudo apt-get dist-upgrade -y
 sudo apt full-upgrade -y
 sudo apt-get autoremove -y
 sudo apt-get install -y ethtool
+sudo apt-get install -y iperf3
 sudo apt-get install -y net-tools
 sudo apt-get install -y screen
 sudo apt-get install -y tmux
@@ -75,3 +75,4 @@ curl -kLs https://get.docker.com/ | sudo env CHANNEL=stable bash
 sudo systemctl enable docker
 sudo systemctl restart docker
 
+sed -i.ORIG '/set bell-style none/ s/#//g' /etc/inputrc
