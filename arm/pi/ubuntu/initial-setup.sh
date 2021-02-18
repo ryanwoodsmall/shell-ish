@@ -74,4 +74,4 @@ curl -kLs https://get.docker.com/ | sudo env CHANNEL=stable bash
 sudo systemctl enable docker
 sudo systemctl restart docker
 
-sed -i.ORIG '/set bell-style none/ s/#//g' /etc/inputrc
+sudo sed -i.ORIG '/set bell-style none/ s/#//g' /etc/inputrc
