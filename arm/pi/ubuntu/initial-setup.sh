@@ -64,8 +64,7 @@ sudo chmod 600 /etc/sudoers.d/wheel
 sudo mkdir -p /etc/docker
 cat >/tmp/docker_daemon.json<<EOF
 {
-  "experimental": true,
-  "storage-driver": "vfs"
+  "experimental": true
 }
 EOF
 cat /tmp/docker_daemon.json | sudo tee /etc/docker/daemon.json
