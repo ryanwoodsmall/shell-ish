@@ -11,6 +11,7 @@
 # XXX - poe fan control
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=230603
 #       https://jjj.blog/2020/02/raspberry-pi-poe-hat-fan-control/
+#       https://www.raspberrypi.org/forums/viewtopic.php?t=276805
 #
 
 sudo systemctl stop unattended-upgrades.service
