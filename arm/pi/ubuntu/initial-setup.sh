@@ -2,12 +2,15 @@
 #
 # ubuntu on raspberry pi 2/3/4
 # tested with ubuntu 20 lts
-# tested on a pi3, 64-bit
+# tested on pi3 & pi4, both aarch64
 # default user/pass: ubuntu/ubuntu
 #
 # XXX - additional user
 # XXX - ssh keys
 # XXX - hostname
+# XXX - poe fan control
+#       https://www.raspberrypi.org/forums/viewtopic.php?t=230603
+#       https://jjj.blog/2020/02/raspberry-pi-poe-hat-fan-control/
 #
 
 sudo systemctl stop unattended-upgrades.service
