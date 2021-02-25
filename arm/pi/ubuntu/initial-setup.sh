@@ -52,7 +52,12 @@ sudo apt-get install -y net-tools
 sudo apt-get install -y screen
 sudo apt-get install -y tmux
 sudo apt-get install -y vim-nox
+sudo apt-get install -y qemu-user-static
+sudo apt-get install -y binfmt-support
 sync
+
+sudo systemctl enable binfmt-support.service
+sudo systemctl start binfmt-support.service
 
 sudo sed -i.ORIG 's/ENABLED=1/ENABLED=0/g' $(sudo realpath /etc/default/motd-news)
 sudo sed -i.ORIG '/motd\.dynamic/s/^/#/g' $(sudo realpath /etc/pam.d/login /etc/pam.d/sshd)
