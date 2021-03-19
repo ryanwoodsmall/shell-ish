@@ -85,7 +85,7 @@ sudo systemctl restart docker
 
 sudo sed -i.ORIG '/set bell-style none/ s/#//g' /etc/inputrc
 
-sudo cat /boot/firmware/usercfg.txt | sudo tee /boot/firmware/usercfg.txt{,.ORIG}
+sudo cat /boot/firmware/usercfg.txt | sudo tee /boot/firmware/usercfg.txt.ORIG
 cat >/tmp/usercfg.txt<<EOF
 dtoverlay=rpi-poe
 dtparam=poe_fan_temp0=60000
