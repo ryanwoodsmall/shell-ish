@@ -13,6 +13,8 @@
 #       https://jjj.blog/2020/02/raspberry-pi-poe-hat-fan-control/
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=276805
 # XXX - remove systemd-resolved
+# XXX - make every step idempotent/checkable...
+# XXX - include in cloud-init?
 #
 
 sudo systemctl stop unattended-upgrades.service
