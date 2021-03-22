@@ -12,6 +12,7 @@
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=230603
 #       https://jjj.blog/2020/02/raspberry-pi-poe-hat-fan-control/
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=276805
+# XXX - remove systemd-resolved
 #
 
 sudo systemctl stop unattended-upgrades.service
@@ -30,6 +31,16 @@ sudo dpkg --purge snapd
 rm -f /etc/localtime
 ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
 echo Etc/UTC > /etc/timezone
+
+sudo cat /boot/firmware/usercfg.txt | sudo tee /boot/firmware/usercfg.txt.ORIG
+cat >/tmp/usercfg.txt<<EOF
+dtoverlay=rpi-poe
+dtparam=poe_fan_temp0=60000
+dtparam=poe_fan_temp1=65000
+dtparam=poe_fan_temp2=70000
+dtparam=poe_fan_temp3=75000
+EOF
+cat /tmp/usercfg.txt | sudo tee -a /boot/firmware/usercfg.txt
 
 sudo apt-get update
 sudo apt-get purge -y unattended-upgrades
@@ -84,13 +95,3 @@ sudo systemctl enable docker
 sudo systemctl restart docker
 
 sudo sed -i.ORIG '/set bell-style none/ s/#//g' /etc/inputrc
-
-sudo cat /boot/firmware/usercfg.txt | sudo tee /boot/firmware/usercfg.txt.ORIG
-cat >/tmp/usercfg.txt<<EOF
-dtoverlay=rpi-poe
-dtparam=poe_fan_temp0=60000
-dtparam=poe_fan_temp1=65000
-dtparam=poe_fan_temp2=70000
-dtparam=poe_fan_temp3=75000
-EOF
-cat /tmp/usercfg.txt | sudo tee -a /boot/firmware/usercfg.txt
