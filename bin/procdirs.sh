@@ -9,11 +9,15 @@ set | grep -q ^BASH_VERSION= || {
   exit 1
 }
 
-# default to $SHELL or bash for the program/process name
-if [ ! -z "${SHELL}" ] ; then
-: ${procname:=$(basename ${SHELL})}
+# default to $SHELL or bash for the program/process name if no args
+if [ ${#} -le 0 ] ; then
+  if [ ! -z "${SHELL}" ] ; then
+  : ${procname:=$(basename ${SHELL})}
+  else
+  : ${procname:=bash}
+  fi
 else
-: ${procname:=bash}
+  : ${procname:=${1}}
 fi
 
 if [ $(pgrep -x ${procname} | grep -v "^${$}$" | wc -l) -le 0 ] ; then
