@@ -31,7 +31,14 @@ for java_version in ${java_versions} ; do
         for release_status in ${release_statuses} ; do
           for support_term in ${support_terms} ; do
             for arch_query_string in ${arch_query_strings} ; do
-              u="${azul_zulu_api_url}?jdk_version=${java_version}&ext=${ext}&os=${os}&bundle_type=${bundle_type}&release_status=${release_status}&support_term=${support_term}&${arch_query_string}"
+              u="${azul_zulu_api_url}"
+              u+="?jdk_version=${java_version}"
+              u+="&ext=${ext}"
+              u+="&os=${os}"
+              u+="&bundle_type=${bundle_type}"
+              u+="&release_status=${release_status}"
+              u+="&support_term=${support_term}"
+              u+="&${arch_query_string}"
               curl -kLs "${u}" | jq .
             done
           done
