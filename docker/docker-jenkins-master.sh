@@ -49,7 +49,7 @@ sleep "${sleep_time}"
 
 echo "installing some packages"
 docker exec -it --user root "${jenkins_name}" apt-get update
-docker exec -it --user root "${jenkins_name}" apt-get install -y file less lsof net-tools psmisc libvirt-clients sudo
+docker exec -it --user root "${jenkins_name}" apt-get install -y file less lsof net-tools psmisc libvirt-clients sudo jq
 
 echo "installing docker and restarting jenkins"
 docker exec -it --user root "${jenkins_name}" groupadd -g "${docker_gid}" "${docker_group}"
