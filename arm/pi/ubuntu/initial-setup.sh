@@ -121,6 +121,7 @@ sudo rm -f /etc/resolv.conf
 sudo cp /etc/NetworkManager/NetworkManager.conf{,.ORIG}
 grep -q 'dns=default' /etc/NetworkManager/NetworkManager.conf || sudo sed -i '/\[main\]/a dns=default' /etc/NetworkManager/NetworkManager.conf
 sudo systemctl restart NetworkManager
+sudo systemctl disable systemd-networkd
 
 echo
 echo
