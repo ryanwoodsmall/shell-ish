@@ -16,6 +16,8 @@
 # XXX - include in cloud-init?
 #
 
+# exec > >(tee -a /tmp/initial-setup.out) 2>&1
+
 sudo systemctl stop unattended-upgrades.service
 sudo systemctl stop snapd.service
 
