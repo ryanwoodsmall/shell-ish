@@ -12,7 +12,6 @@
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=230603
 #       https://jjj.blog/2020/02/raspberry-pi-poe-hat-fan-control/
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=276805
-# XXX - remove systemd-resolved
 # XXX - make every step idempotent/checkable...
 # XXX - include in cloud-init?
 #
@@ -53,6 +52,7 @@ sudo apt-get purge -y apport-symptoms
 sudo apt-get purge -y snapd
 sudo apt-get purge -y apparmor
 sudo apt-get purge -y sosreport
+sudo apt-get purge -y motd-news-config
 sudo apt-get autoremove -y
 
 sudo apt-get update
@@ -67,10 +67,14 @@ sudo apt-get install -y tmux
 sudo apt-get install -y vim-nox
 sudo apt-get install -y qemu-user-static
 sudo apt-get install -y binfmt-support
+sudo apt-get install -y network-manager
 sync
 
 sudo systemctl enable binfmt-support.service
 sudo systemctl start binfmt-support.service
+
+sudo systemctl stop motd-news.timer
+sudo systemctl disable motd-news.timer
 
 sudo sed -i.ORIG 's/ENABLED=1/ENABLED=0/g' $(sudo realpath /etc/default/motd-news)
 sudo sed -i.ORIG '/motd\.dynamic/s/^/#/g' $(sudo realpath /etc/pam.d/login /etc/pam.d/sshd)
@@ -97,3 +101,21 @@ sudo systemctl enable docker
 sudo systemctl restart docker
 
 sudo sed -i.ORIG '/set bell-style none/ s/#//g' /etc/inputrc
+
+netplan generate
+sudo mv /etc/netplan/50-cloud-init.yaml{,.OFF}
+cat >/tmp/99-network-manager.yaml<<EOF
+network:
+  version: 2
+  renderer: NetworkManager
+EOF
+cat /tmp/99-network-manager.yaml | sudo tee /etc/netplan/99-network-manager.yaml
+netplan generate
+netplan apply
+
+sudo systemctl disable systemd-resolved.service
+sudo systemctl stop systemd-resolved
+sudo rm -f /etc/resolv.conf
+sudo cp /etc/NetworkManager/NetworkManager.conf{,.ORIG}
+grep -q 'dns=default' /etc/NetworkManager/NetworkManager.conf || sudo sed -i '/\[main\]/a dns=default' /etc/NetworkManager/NetworkManager.conf
+sudo systemctl restart NetworkManager
