@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 #
 # show java system properties
-# from old gist
+#
+# from old gist:
+#   https://gist.github.com/ryanwoodsmall/0562fa2427a393d96bbdfce199e048a2
 #
 # java version:
 # /*
