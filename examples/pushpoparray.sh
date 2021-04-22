@@ -160,6 +160,10 @@ function poparray() {
 }
 
 function dequeuearray() {
+  poparray "${@}"
+}
+
+function takearray() {
   local a l i e n
   if [ ${#} -lt 1 ] ; then
     echo "${FUNCNAME}: not enough elements" 1>&2
@@ -189,6 +193,25 @@ function dequeuearray() {
   eval unset "${a}[${n}]"
   iflock "${a}" write unlock
   unset a l i e n
+}
+
+function peekarray() {
+  local a l n
+  if [ ${#} -lt 1 ] ; then
+    echo "${FUNCNAME}: not enough elements" 1>&2
+    return
+  fi
+  a="${1}"
+  iflock "${a}" read lock
+  l=$(getarraylength "${a}")
+  if [ ${l} -lt 1 ] ; then
+    unlockarray "${a}"
+    return
+  fi
+  n=$((${l}-1))
+  eval echo "\${${a}[${n}]}"
+  iflock "${a}" read unlock
+  unset a l n
 }
 
 function showarray() {
@@ -232,13 +255,45 @@ if [ ${testscript} -eq 1 ] ; then
   testarray=()
   showarray testarray
   getarraylength testarray
-  s=( 'push:element zero' 'push:1' 'push:this is two' 'pop:' 'push:three' 'pop:' 'push:4' 'pop:' 'pop:' 'pop:' 'pop:' 'push:last' 'enqueue:new first' 'enqueue:0th' 'pop:' 'dequeue:' 'dequeue:' )
+  s=()
+  s+=( 'push:element zero' )
+  s+=( 'push:1' )
+  s+=( 'push:this is two' )
+  s+=( 'pop:' )
+  s+=( 'push:three' )
+  s+=( 'pop:' )
+  s+=( 'push:4' )
+  s+=( 'pop:' )
+  s+=( 'pop:' )
+  s+=( 'pop:' )
+  s+=( 'pop:' )
+  s+=( 'push:last' )
+  s+=( 'enqueue:new first' )
+  s+=( 'enqueue:0th' )
+  s+=( 'pop:' )
+  s+=( 'dequeue:' )
+  s+=( 'dequeue:' )
+  s+=( 'enqueue:element zero' )
+  s+=( 'enqueue:1' )
+  s+=( 'enqueue:two' )
+  s+=( 'take:' )
+  s+=( 'pop:' )
+  s+=( 'take:' )
+  s+=( 'take:' )
+  s+=( 'push:new 1' )
+  s+=( 'peek:' )
+  s+=( 'push:new 2' )
+  s+=( 'peek:' )
+  s+=( 'pop:' )
+  s+=( 'peek:' )
+  s+=( 'pop:' )
+  s+=( 'peek:' )
   for i in ${!s[@]} ; do
     v="${s[${i}]}"
     v="${v%%:*}"
     e="${s[${i}]}"
     e="${e#${v}:}"
-    echo "-- ${v}"
+    echo "-- ${s[${i}]}"
     ${v}array testarray "${e}"
     #showarray testarray
     echo "$(getarraylength testarray) : $(dumparray testarray)"
