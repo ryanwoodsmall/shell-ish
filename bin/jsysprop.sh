@@ -8,7 +8,7 @@
 # java version:
 # /*
 #   import java.util.Properties;
-#   
+#
 #   public class jsysprop {
 #   	public static void main(String[] args) {
 #   		System.getProperties().list(System.out);

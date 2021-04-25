@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# show the current working directories of any of your own real $SHELL processes 
+# show the current working directories of any of your own real $SHELL processes
 #
 
 set | grep -q ^BASH_VERSION= || {
