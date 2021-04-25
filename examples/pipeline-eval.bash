@@ -2,6 +2,28 @@
 #
 # create and eval a pipeline
 #
+# pipeline names:
+#  buildandandpipeline - prog1 && ( prog2 && ( prog3 && ( default ) ) )
+#  buildandpipeline    - prog1 & ( prog2 & ( prog3 & ( default ) ) )
+#  buildororpipeline   - prog1 || ( prog2 || ( prog3 || ( default ) ) )
+#  buildorpipeline     - prog1 | ( prog2 | ( prog3 | ( default ) ) )
+#
+# pipeline function:
+#  buildandandpipeline - conditional && pipeline
+#  buildandpipeline    - doesn't make a ton of sense? default could be 'wait' to stop for forked PIDs?
+#  buildororpipeline   - conditional || pipeline
+#  buildorpipeline     - i/o pipeline: prog1 stdout -> prog2 stdin stdout -> prog3 stdin stdout -> default stdin stdout
+#
+# nice names:
+#  buildandandpipeline - truepipeline
+#  buildandpipeline    - waitpipeline
+#  buildororpipeline   - falsepipeline
+#  buildorpipeline     - iopipeline
+#
+# XXX - use for test suite "expected failures"
+#   s=$(buildororpipeline 'exit 1' 'failing1' 'failing2' 'failing3')
+#   ( eval "${s}" ) && failexit "some expected failures passed" || echo "all expected failures failed"
+#
 
 set -eu
 
@@ -42,34 +64,39 @@ function reverseargs() {
   unset i r t
 }
 
-# build an '&&' pipeline
-function buildandpipeline() {
-  if [ ${#} -eq 0 ] ; then
-    echo "true"
-    return
-  fi
-  if [ ${#} -eq 1 ] ; then
-    echo "${1}"
-    return
-  fi
-  local d="${1}"
-  shift
-  buildpipeline "&&" "${d}" "${@}"
-}
+# build & && | || pipeline functions
+for i in "and,&" "andand,&&" "or,|" "oror,||" ; do
+  t="${i%%,*}"
+  p="${i##*,}"
+  eval "
+    function build${t}pipeline() {
+      if [ \${#} -eq 0 ] ; then
+        echo true
+        return
+      fi
+      if [ \${#} -eq 1 ] ; then
+        echo \"\${1}\"
+        return
+      fi
+      local d=\"\${1}\"
+      shift
+      buildpipeline \"${p}\" \"\${d}\" \"\${@}\"
+    }
+  "
+done
 
-# build an '||' pipeline
-function buildorpipeline() {
-  if [ ${#} -eq 0 ] ; then
-    echo "true"
-    return
-  fi
-  if [ ${#} -eq 1 ] ; then
-    echo "${1}"
-    return
-  fi
-  local d="${1}"
-  shift
-  buildpipeline "||" "${d}" "${@}"
+# nice names
+function truepipeline() {
+  buildandandpipeline "${@}"
+}
+function falsepipeline() {
+  buildororpipeline "${@}"
+}
+function iopipeline() {
+  buildorpipeline "${@}"
+}
+function waitpipeline() {
+  buildandpipeline "${@}"
 }
 
 # build a pipeline
@@ -77,7 +104,7 @@ function buildorpipeline() {
 #   pipeline stage separator
 #   default/base state
 #   a bunch of commands
-#     
+#
 function buildpipeline() {
   if [ ${#} -lt 3 ] ; then
     echo "# ${FUNCNAME}: wrong number of arguments; returning dummy pipeline" 1>&2
@@ -134,29 +161,48 @@ if [ ${testscript} -eq 1 ] ; then
 
   # now with a function
 
-  s=$(buildorpipeline "fail" "efp 1" "efp 2")
+  s=$(falsepipeline "fail" "efp 1" "efp 2")
   echo
   echo "# pipeline \${s}: ${s}"
   echo "# running: ( eval \"\${s}\" ) || esp 3"
   ( eval "${s}" ) || esp 3
 
-  s=$(buildandpipeline "true" "esp 1" "esp 2")
+  s=$(truepipeline "true" "esp 1" "esp 2")
   echo
   echo "# pipeline \${s}: ${s}"
   echo "# running: ( eval \"\${s}\" ) || esp 3"
   ( eval "${s}" ) || esp 3
 
-  s=$(eval buildorpipeline "fail" $(for i in {0..4} ; do echo -n "\"efp ${i}\" " ; done))
+  s=$(eval falsepipeline "fail" $(for i in {0..4} ; do echo -n "\"efp ${i}\" " ; done))
   echo
   echo "# pipeline \${s}: ${s}"
   echo "# running: ( eval \"\${s}\" ) || esp 5"
   ( eval "${s}" ) || esp 5
 
   s='( '
-  s+=$(eval buildorpipeline "fail" $(for i in {0..2} ; do echo -n "\"efp ${i}\" " ; done))
+  s+=$(eval falsepipeline "fail" $(for i in {0..2} ; do echo -n "\"efp ${i}\" " ; done))
   s+=' ) || ( '
-  s+=$(eval buildandpipeline "true" $(for i in {0..2} ; do echo -n "\"esp ${i}\" " ; done))
+  s+=$(eval truepipeline "true" $(for i in {0..2} ; do echo -n "\"esp ${i}\" " ; done))
   s+=' )'
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || true"
+  ( eval "${s}" ) || true
+
+  n=$(eval truepipeline "true" $(for i in {0..2} ; do echo -n "\"esp ${i}\" " ; done))
+  s=$(eval falsepipeline \"${n}\" $(for i in {0..2} ; do echo -n "\"efp ${i}\" " ; done))
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || true"
+  ( eval "${s}" ) || true
+
+  s=$(iopipeline 'xargs echo $$:' 'echo 0' 'xargs echo 1' 'xargs echo 2' 'xargs echo 3')
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || true"
+  ( eval "${s}" ) || true
+
+  s=$(waitpipeline 'wait ; sleep 1 ; date' 'sleep 1 ; date' 'sleep 1 ; date' 'sleep 1 ; date')
   echo
   echo "# pipeline \${s}: ${s}"
   echo "# running: ( eval \"\${s}\" ) || true"
