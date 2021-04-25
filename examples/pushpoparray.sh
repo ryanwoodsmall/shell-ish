@@ -28,7 +28,7 @@ declare -A arraylock
 function waitlock() {
   local a
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -42,7 +42,7 @@ function waitlock() {
 function lockarray() {
   local a
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -54,7 +54,7 @@ function lockarray() {
 function unlockarray() {
   local a
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -65,7 +65,7 @@ function unlockarray() {
 function iflock() {
   local a l c s v
   if [ ${#} -lt 3 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -87,7 +87,7 @@ function iflock() {
 function getarraylength() {
   local a l
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -99,7 +99,7 @@ function getarraylength() {
 function pusharray() {
   local a e
   if [ ${#} -le 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -116,7 +116,7 @@ function pusharray() {
 function enqueuearray() {
   local a l i e n
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -140,7 +140,7 @@ function enqueuearray() {
 function poparray() {
   local a l n e
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements "1>&2
+    echo "${FUNCNAME}: not enough arguments "1>&2
     return
   fi
   a="${1}"
@@ -166,7 +166,7 @@ function dequeuearray() {
 function takearray() {
   local a l i e n
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -198,7 +198,7 @@ function takearray() {
 function peekarray() {
   local a l n
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements" 1>&2
+    echo "${FUNCNAME}: not enough arguments" 1>&2
     return
   fi
   a="${1}"
@@ -217,7 +217,7 @@ function peekarray() {
 function showarray() {
   local a i
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements "1>&2
+    echo "${FUNCNAME}: not enough arguments "1>&2
     return
   fi
   a="${1}"
@@ -236,7 +236,7 @@ function showarray() {
 function dumparray() {
   local a i
   if [ ${#} -lt 1 ] ; then
-    echo "${FUNCNAME}: not enough elements "1>&2
+    echo "${FUNCNAME}: not enough arguments "1>&2
     return
   fi
   a="${1}"
