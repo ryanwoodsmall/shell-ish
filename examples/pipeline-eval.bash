@@ -97,6 +97,7 @@ function buildpipeline() {
   for i in $(seq 0 $((${#r[@]}-1))) ; do
     s="${r[${i}]} ${l} ( ${s} )"
   done
+  # XXX - is this safe? probably not... newlines probably need escaping
   echo "${s}" | tr -d '\n'
   unset l d r s i
 }
@@ -148,8 +149,8 @@ if [ ${testscript} -eq 1 ] ; then
   s=$(eval buildorpipeline "fail" $(for i in {0..4} ; do echo -n "\"efp ${i}\" " ; done))
   echo
   echo "# pipeline \${s}: ${s}"
-  echo "# running: ( eval \"\${s}\" ) || esp 6"
-  ( eval "${s}" ) || esp 6
+  echo "# running: ( eval \"\${s}\" ) || esp 5"
+  ( eval "${s}" ) || esp 5
 
   s='( '
   s+=$(eval buildorpipeline "fail" $(for i in {0..2} ; do echo -n "\"efp ${i}\" " ; done))
