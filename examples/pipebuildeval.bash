@@ -208,5 +208,14 @@ if [ ${testscript} -eq 1 ] ; then
   echo "# running: ( eval \"\${s}\" ) || true"
   ( eval "${s}" ) || true
 
+  ## XXX - woof, this gets ugly
+  #n1=$(forkpipeline 'wait' '(sleep 1 ; echo n1:1:\`date\`)' '(sleep 1 ; echo n1:2:\`date\`)')
+  #n2=$(forkpipeline 'wait' '(sleep 1 ; echo n2:1:\`date\`)' '(sleep 1 ; echo n2:2:\`date\`)')
+  #s=$(eval forkpipeline \"\( wait \; sleep 1 \; date \)\" \"${n1}\" \"${n2}\")
+  #echo
+  #echo "# pipeline \${s}: ${s}"
+  #echo "# running: ( eval \"\${s}\" ) || true"
+  #( eval "${s}" ) || true
+
   echo
 fi
