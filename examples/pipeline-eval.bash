@@ -101,52 +101,65 @@ function buildpipeline() {
   unset l d r s i
 }
 
-# build pipeline
-s=''
-i=0
-s+="esp ${i} && "
-for i in {1..10} ; do
-  s+="efp ${i} || "
-done
-((i++))
+: ${testscript:=0}
+if [ ${testscript} -eq 1 ] ; then
+  # build pipeline
+  s=''
+  i=0
+  s+="esp ${i} && "
+  for i in {1..4} ; do
+    s+="efp ${i} || "
+  done
+  ((i++))
 
-# a successful run will short-circuit the pipeline
-#s+="esp ${i} || "
-s+="fail"
+  # a successful run will short-circuit the pipeline
+  #s+="esp ${i} || "
+  s+="fail"
 
-# show s
-echo
-echo "# pipeline \${s}: ${s}"
+  # show s
+  echo
+  echo "# pipeline \${s}: ${s}"
 
-# this will fail (expected) with esp call commented above
-#eval "${s}"
+  # this will fail (expected) with esp call commented above
+  #eval "${s}"
 
-# fail call will kill the efp|| example, esp call will never eval the pipeline
-#esp ${i} || eval "$s"
-#efp ${i} || eval "$s"
+  # fail call will kill the efp|| example, esp call will never eval the pipeline
+  #esp ${i} || eval "$s"
+  #efp ${i} || eval "$s"
 
-# subshell eval to workaround exit in fail()
-echo "# running: ( eval \"\${s}\" ) || esp \"${i}\""
-( eval "${s}" ) || esp "${i}"
+  # subshell eval to workaround exit in fail()
+  echo "# running: ( eval \"\${s}\" ) || esp \"${i}\""
+  ( eval "${s}" ) || esp "${i}"
 
-# now with a function
+  # now with a function
 
-s=$(buildorpipeline "fail" "efp 1" "efp 2")
-echo
-echo "# pipeline \${s}: ${s}"
-echo "# running: ( eval \"\${s}\" ) || esp 3"
-( eval "${s}" ) || esp 3
+  s=$(buildorpipeline "fail" "efp 1" "efp 2")
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || esp 3"
+  ( eval "${s}" ) || esp 3
 
-s=$(buildandpipeline "true" "esp 1" "esp 2")
-echo
-echo "# pipeline \${s}: ${s}"
-echo "# running: ( eval \"\${s}\" ) || esp 3"
-( eval "${s}" ) || esp 3
+  s=$(buildandpipeline "true" "esp 1" "esp 2")
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || esp 3"
+  ( eval "${s}" ) || esp 3
 
-s=$(eval buildorpipeline "fail" $(for i in {0..5} ; do echo -n "\"efp ${i}\" " ; done))
-echo
-echo "# pipeline \${s}: ${s}"
-echo "# running: ( eval \"\${s}\" ) || esp 6"
-( eval "${s}" ) || esp 6
+  s=$(eval buildorpipeline "fail" $(for i in {0..4} ; do echo -n "\"efp ${i}\" " ; done))
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || esp 6"
+  ( eval "${s}" ) || esp 6
 
-echo
+  s='( '
+  s+=$(eval buildorpipeline "fail" $(for i in {0..2} ; do echo -n "\"efp ${i}\" " ; done))
+  s+=' ) || ( '
+  s+=$(eval buildandpipeline "true" $(for i in {0..2} ; do echo -n "\"esp ${i}\" " ; done))
+  s+=' )'
+  echo
+  echo "# pipeline \${s}: ${s}"
+  echo "# running: ( eval \"\${s}\" ) || true"
+  ( eval "${s}" ) || true
+
+  echo
+fi
