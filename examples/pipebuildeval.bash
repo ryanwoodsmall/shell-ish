@@ -16,7 +16,7 @@
 #
 # nice names:
 #  buildandandpipeline - truepipeline
-#  buildandpipeline    - waitpipeline
+#  buildandpipeline    - forkpipeline
 #  buildororpipeline   - falsepipeline
 #  buildorpipeline     - iopipeline
 #
@@ -95,7 +95,7 @@ function falsepipeline() {
 function iopipeline() {
   buildorpipeline "${@}"
 }
-function waitpipeline() {
+function forkpipeline() {
   buildandpipeline "${@}"
 }
 
@@ -202,7 +202,7 @@ if [ ${testscript} -eq 1 ] ; then
   echo "# running: ( eval \"\${s}\" ) || true"
   ( eval "${s}" ) || true
 
-  s=$(waitpipeline 'wait ; sleep 1 ; date' 'sleep 1 ; date' 'sleep 1 ; date' 'sleep 1 ; date')
+  s=$(forkpipeline 'wait ; sleep 1 ; date' 'sleep 1 ; date' 'sleep 1 ; date' 'sleep 1 ; date')
   echo
   echo "# pipeline \${s}: ${s}"
   echo "# running: ( eval \"\${s}\" ) || true"
