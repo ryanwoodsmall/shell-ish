@@ -13,7 +13,7 @@
 #  XXX - could combine with serialized hash to do key/value store, pub/sub, etc.
 #  XXX - urlencode/base64 encode data. json. lol
 #  XXX - id with uuid
-#  XXX - not far from map/filter(/reduce?) behavior here
+#  XXX - not far from map/filter(/reduce?/apply?) behavior here
 #  XXX - need copy array function
 #  XXX - combine with fs fifos/network sockets to generalize/distribute
 #
