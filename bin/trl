@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# trl - tr to lowercase
+#
+# formerly 'lc' but this conflicts with plan9port, and mono
+#
+# other possible names?
+# - tlc (to lower case)
+# - lower
+#
+
+if [ ${#} -ne 0 ] ; then
+	i='echo "${@}"'
+else
+	i='cat /dev/stdin'
+fi
+
+eval "${i}" | tr '[[:upper:]]' '[[:lower:]]'
