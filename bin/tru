@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+# tru - tr to uppercase
+#
+# formerly 'uc' but renamed to reflect lc -> trl
+#
+# other possible names?
+# - tuc (to upper case)
+# - upper
+#
 
 if [ ${#} -ne 0 ] ; then
 	i='echo "${@}"'
