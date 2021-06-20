@@ -16,6 +16,9 @@ set -eu
 : ${iport:=18080}
 : ${oport:=18443}
 : ${HTTP_HOST:=""}
+: ${HTTPS:="off"}
+: ${REQUEST_SCHEME:="http"}
+: ${SERVER_PORT:=${iport}}
 
 d="$(date -R)"
 h="$(echo ${HTTP_HOST} | cut -f1 -d:)"
