@@ -19,10 +19,13 @@ set -eu
 : ${HTTPS:="off"}
 : ${REQUEST_SCHEME:="http"}
 : ${SERVER_PORT:=${iport}}
+: ${REQUEST_URI:="/"}
 
 d="$(date -R)"
 h="$(echo ${HTTP_HOST} | cut -f1 -d:)"
 test -z "${h}" && h="$(hostname)" || true
+test -z "${REQUEST_URI}" && REQUEST_URI="/" || true
+echo "${REQUEST_URI}" | grep -q '^/' || REQUEST_URI="/${REQUEST_URI}"
 
 printf 'HTTP/1.1 302 Found\r\n'
 printf 'Date: %s\r\n' "${d}"
