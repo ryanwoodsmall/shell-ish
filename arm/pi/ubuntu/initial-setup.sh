@@ -14,6 +14,7 @@
 #       https://www.raspberrypi.org/forums/viewtopic.php?t=276805
 # XXX - make every step idempotent/checkable...
 # XXX - include in cloud-init?
+# XXX - gpu_mem=16 ???
 #
 
 # exec > >(tee -a /tmp/initial-setup.out) 2>&1
