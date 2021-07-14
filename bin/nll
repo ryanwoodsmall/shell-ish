@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# number all lines in a file/stdin and pipe to less
+#
+
+nl -ba "${@}" | less -R
