@@ -3,4 +3,4 @@
 # number all lines in a file/stdin and pipe to less
 #
 
-nl -ba "${@}" | less -R
+nl -ba "${@}" | less -F -R
