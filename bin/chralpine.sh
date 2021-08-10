@@ -57,7 +57,7 @@ function scriptecho() {
 
 # default versions/names/arch
 chrname="alpine"
-alpver="3.14.0"
+alpver="3.14.1"
 alparch="$(uname -m | sed 's/^\(arm\).*/\1hf/g;s/^i.86$/x86/g')"
 sshport="22222"
 
@@ -268,8 +268,12 @@ function chrstart() {
       scriptecho "${chrdir}/${bm} already bind mounted"
       continue
     }
-    scriptecho "bind mounting ${bm}"
-    mount -o bind /${bm} ${chrdir}/${bm}
+    if [ -e /${bm} ] ; then
+      scriptecho "bind mounting ${bm}"
+      mount -o bind /${bm} ${chrdir}/${bm}
+    else
+      scriptecho "${bm} not found - not bind mounting"
+    fi
   done
 }
 
