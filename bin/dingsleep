@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# ding sometimes
+#
+
+set -eu
+
+: ${d="echo -n -e \a"}
+: ${w:=1}
+
+if [ ${#} -ge 1 ] ; then
+  if [[ ${1} =~ ^[0-9]+$ ]] ; then
+    w=${1}
+  else
+    echo "$(basename "${BASH_SOURCE[0]}"): please provide a numeric argument for time (in seconds) to sleep" 1>&2
+    exit 1
+  fi
+fi
+
+while true ; do
+  ${d}
+  sleep ${w}
+done
+
+# vim: set ft=sh:
