@@ -2,6 +2,8 @@
 #
 # ding sometimes
 #
+#   XXX - add second arg for # of repeats?
+#
 
 set -eu
 
