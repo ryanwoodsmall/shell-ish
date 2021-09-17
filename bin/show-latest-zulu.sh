@@ -14,7 +14,7 @@ for p in curl jq ; do
   which ${p} >/dev/null 2>&1 || { echo "${p} not found" ; exit 1 ; }
 done
 
-: ${java_versions:="8 11"}
+: ${java_versions:="8 11 17"}
 : ${exts:="tar.gz"}
 : ${oses:="linux"}
 : ${bundle_types:="jdk"}
