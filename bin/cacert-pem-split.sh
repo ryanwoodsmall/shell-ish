@@ -2,7 +2,7 @@
 #
 # read a cacert.pem file and split it into individual #.crt files in the current directory
 #
-# initially, this was to be a moving window over the cert bundle using tail/head pairs
+# initially, this was to be a moving window over the cert bundle using head/tail pairs
 # this is easier imho and only requires reading the bundle pem once
 #
 # XXX - note: this is not a parser!!! verify with openssl etc.
