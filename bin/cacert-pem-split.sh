@@ -37,6 +37,11 @@ for i in ${!lines[@]} ; do
   fi
 done
 
+if [ ${cert} -le 0 ] ; then
+  echo "${s}: no cert BEGIN/END pairs found" 1>&2
+  exit 1
+fi
+
 echo "${s}: found ${cert} BEGIN/ENDs in ${f}" 1>&2
 width="$(echo -n ${cert} | wc -c)"
 printfpattern="%0${width}d"
