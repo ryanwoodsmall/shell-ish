@@ -7,6 +7,7 @@
 #
 # XXX - note: this is not a parser!!! verify with openssl etc.
 # XXX - invalid combos of nested/repeated begin/end pairs will screw it up
+# XXX - tighten up BEGIN/END =~ matchers - line should start and end with "-"
 #
 set -eu
 
@@ -18,6 +19,7 @@ declare -a endcert
 
 cert=0
 width=1
+beginfound=0
 
 if [ ${#} -le 0 ] ; then
   f="/dev/stdin"
@@ -31,9 +33,19 @@ for i in ${!lines[@]} ; do
   l="${lines[${i}]}"
   if [[ "${l}" =~ "BEGIN CERT" ]] ; then
     begincert[${cert}]="${i}"
+    if [ ${beginfound} -ne 0 ] ; then
+      echo "${s}: nested BEGIN statements around line ${i}?" 1>&2
+      exit 2
+    fi
+    beginfound=1
   elif [[ "${l}" =~ "END CERT" ]] ; then
     endcert[${cert}]="${i}"
     ((cert+=1))
+    if [ ${beginfound} -ne 1 ] ; then
+      echo "${s}: END without BEGIN around line ${i}?" 1>&2
+      exit 2
+    fi
+    beginfound=0
   fi
 done
 
