@@ -17,7 +17,7 @@ declare -a begincert
 declare -a endcert
 
 cert=0
-width=0
+width=1
 
 if [ ${#} -le 0 ] ; then
   f="/dev/stdin"
