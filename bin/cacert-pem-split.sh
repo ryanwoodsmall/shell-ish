@@ -32,19 +32,19 @@ readarray -t lines < "${f}"
 for i in ${!lines[@]} ; do
   l="${lines[${i}]}"
   if [[ "${l}" =~ "BEGIN CERT" ]] ; then
-    begincert[${cert}]="${i}"
     if [ ${beginfound} -ne 0 ] ; then
       echo "${s}: nested BEGIN statements around line ${i}?" 1>&2
       exit 2
     fi
+    begincert[${cert}]="${i}"
     beginfound=1
   elif [[ "${l}" =~ "END CERT" ]] ; then
-    endcert[${cert}]="${i}"
-    ((cert+=1))
     if [ ${beginfound} -ne 1 ] ; then
       echo "${s}: END without BEGIN around line ${i}?" 1>&2
       exit 2
     fi
+    endcert[${cert}]="${i}"
+    ((cert+=1))
     beginfound=0
   fi
 done
