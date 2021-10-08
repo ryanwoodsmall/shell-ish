@@ -10,7 +10,7 @@ set -eu
 : ${head:=1}
 : ${tail:=1}
 
-# XXX - this could be a loop but would need index+deference. do it the dumb way
+# XXX - this could be a loop but would need index+dereference or eval. do it the dumb way
 # - head is ${1}
 # - tail is ${2}
 # - consume these and pass "${@}" on to pipeline
