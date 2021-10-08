@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# headtail - open a window into a file
+# read the first X lines of a file/stdin | tail Y lines
+#
+# XXX - context? "window of X lines centered at line Y"
+# XXX - -- (or just -) early termination/shift of first two positional args? ignore? one/other/both
+set -eu
+
+: ${head:=1}
+: ${tail:=1}
+
+# XXX - this could be a loop but would need index+deference. do it the dumb way
+# - head is ${1}
+# - tail is ${2}
+# - consume these and pass "${@}" on to pipeline
+if [[ ${#} -gt 0 ]] ; then
+  if [[ "${1}" =~ ^[0-9]+$ ]] ; then
+    head="${1}"
+    shift
+  fi
+fi
+if [[ ${#} -gt 0 ]] ; then
+  if [[ "${1}" =~ ^[0-9]+$ ]] ; then
+    tail="${1}"
+    shift
+  fi
+fi
+
+if [[ ! "${head}:${tail}" =~ ^[0-9]+:[0-9]+$ ]] ; then
+  echo "$(basename ${BASH_SOURCE[0]}) [# [# [arguments]]]" 1>&2
+  exit 1
+fi
+
+head -${head} "${@}" | tail -${tail}
