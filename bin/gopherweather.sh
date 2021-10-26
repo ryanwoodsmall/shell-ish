@@ -11,4 +11,4 @@ hash lynx >/dev/null 2>&1 || {
   exit 1
 }
 
-lynx -dump "gopher://gopher.floodgap.com:70/7/groundhog/us/zipcode?${zip}"
+lynx -dump -dont_wrap_pre "gopher://gopher.floodgap.com:70/7/groundhog/us/zipcode?${zip}"
