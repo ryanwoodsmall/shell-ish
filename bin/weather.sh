@@ -18,5 +18,5 @@ if [ ${#} -ne 0 ] ; then
 fi
 
 # en.wttr.in ~= wttr.in/...?lang=en
-curl -kLs "http://en.wttr.in/${wttrinloc}" \
+curl -kLs "https://en.wttr.in/${wttrinloc// /%20}" \
 | egrep -v '^(New|Follow|$)'
