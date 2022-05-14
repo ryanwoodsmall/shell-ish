@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# ding fter sleeping
+#
+
+set -eu
+
+: ${a:=1}
+
+if [ ${#} -ge 1 ] ; then
+  if [[ ${1} =~ ^[0-9]+$ ]] ; then
+    a=${1}
+    shift
+  else
+    echo "$(basename "${BASH_SOURCE[0]}"): please provide a numeric argument for time (in seconds) to wait before dinging" 1>&2
+    exit 1
+  fi
+fi
+
+sleep ${a}
+dingsleep "${@}"
+
+# vim: set ft=sh:
