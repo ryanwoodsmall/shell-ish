@@ -2,5 +2,8 @@
 #
 # number all lines in a file/stdin and pipe to less
 #
+# XXX - add "-Q" and "-L" to less for quiet/no bell and ignore LESSOPEN?
+# XXX - check for an use "${PAGER}" if set?
+#
 
 nl -ba "${@}" | less -F -R
