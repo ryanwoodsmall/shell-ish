@@ -17,6 +17,19 @@
 #  XXX - need copy array function
 #  XXX - combine with fs fifos/network sockets to generalize/distribute
 #
+#  XXX - waitlock/freelock should send commands to an intermediate service function
+#    state:    LOCKED, FREE
+#    commands: LOCK, FREE, WAIT
+#    could use a fork/background/wait thred
+#    or build a stream with fifo idea...
+#
+#           LOCKED   FREE
+#           _________________
+#      LOCK| false  | true  |
+#      FREE| true   | false |
+#      WAIT| thread | LOCK  |
+#          ------------------
+#
 
 set -eu
 
