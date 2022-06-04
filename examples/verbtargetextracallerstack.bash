@@ -2,15 +2,19 @@
 #
 # generate some functions in "verb_target_extra{_extra,...}" format
 #
+# XXX - "stack" is not right, need a depth tracking wrapper with a counter for indent level
+# XXX - increment n, filter functions and add caller as necessary
+# XXX - should verb be action? action-target-options? important!
+#
 # this can be used to get and use function-name-encoded info with a standarized naming scheme
 # - like package name at runtime using function name
 # - or "what to do"
 # - if this is "install" with "name1", do this, if it's "name2" do this other thing
 #
-# also show caller info and stack here and there
+# useful funcs
+# - {get,has}{verb,target,extra}
 #
-# XXX - "stack" is not right, need a depth tracking wrapper with a counter for indent level
-# XXX - increment n, filter functions and add caller as necessary
+# also show caller info and stack here and there
 #
 # recursion detection - loop too... hmmmmmm...
 #
@@ -38,6 +42,19 @@
 #   - restore oldfunc
 #   - delete newfunc
 # - callbacks?
+#   - crosware...
+#   - "applycallback func" - reify funcs after round of sourcing profile
+#   - use a stack/array?
+#     - global hash with serialized array of callbacks?
+#       - "addcallback func 'cmd one' 'cmd two'"
+#       - crosware rcallbacks=( "targetfunc 'cmd1 ; cmd2' 'second set'" "targetgfunc2 'cmd3 | cmd4'" )
+#       - serialze original function to a function hash (once, based on hash key existence)
+#       - check hash keys for func, initialize to empty array () if not found
+#       - if found, rehydrate to temp array
+#       - append any args to the array
+#       - serialize and save to hash value for func key
+#       - rehydrate serialized original func and append all callbacks to array
+#       - eval the new function array to replace it
 #   - "callback 'callback_def callback_args' func func_arg1 'func_arg2-a func_arg2-b' func_arg..."
 #   - shift off callback
 #   - save function
@@ -68,6 +85,11 @@
 #   - append to func body
 # - passing a whole lot of function bodies around
 # - could lead to self-modifying shell script, o h t h e h o r r o r
+#
+# useful funcs
+# - variables : "varexists varname"    "vartype varname"
+# - array     : "arrayexists arrayvar" "isarray arrayvary" "createarray arrayvar" "savearray arrayvar" "uniqarray arrayvar"
+# - hash      : "hashexists hashvar"   "ishash hashvar"    "createhash hashvar"   "getkeys hashvar"    "haskey hashvar key" "savehash hashvar"
 #
 
 function showstack() {
