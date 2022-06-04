@@ -31,8 +31,9 @@
 #   - could use for e.g. a package to tell upstream "if you install yourself, upgrade me too"
 #   - no special handling, just throw a check in a function or an overrides dir that's sourced
 # - if flag, save function, insert code...
-#   - like:
+#   - like to show stack...:
 #   - { printf "%$((${#FUNCNAME[@]}*2))s" ; printf " * ${FUNCNAME[0]} : ${@}" ; } 1>&2
+#     -or { l=${#FUNCNAME[@]} ; for i in ${!FUNCNAME[@]} ; do e=$(((${i}+1)%${l})) ; printf "%$((${e}*2))s" ; echo "* ${FUNCNAME[${i}]}" ; done ; } | tac 1>&2
 #   - "eval newfunc argument1 argument2 ..."
 #   - restore oldfunc
 #   - delete newfunc
