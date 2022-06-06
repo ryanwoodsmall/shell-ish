@@ -292,6 +292,9 @@
 #             - need memtag#? will be "first acknowledged" since we dump to bus
 #           - should memory registers be able to latch the bus? "process message # right now (just shift off packet), then unlatch"
 #             - essentially locking, would probably need "commands" back to controller in message response, act accordingly in controller
+#             - would open up length tag - i.e., start processing and don't stop until you've done X things
+#             - memory register arrays would need another pc each, 8-bit, again?
+#             - detect tag -> reset memory registry pc -> start counting and pulling packets off bus
 #           - controller (and memory registers) need "all tags do this?" (i.e., reset)
 #           - memory register tags
 #             - id for sending data to byte/register storage machine
@@ -313,7 +316,7 @@
 #             - using another state machine, with another program counter, with a different register set, ...
 #             - again, could have 256 8-bit registers but only present #
 #             - need sign bit here, ... !
-#             - isa is essentially encoded into lower registers - "firmware"
+#             - isa is essentially encoded into lower registers - "firmware", "microcode"
 #             - instruction dispatch - maps instruction to 1 to ~2+ registers
 #             - another "packet" on a bus, this time the tag is the opcode
 #             - variable length instructions? nah... wasteful for fixed length but significantly easier
@@ -334,6 +337,8 @@
 #             - bra?
 #             - mul/div implemented on add/sub?
 #             - ... many more
+#       - base on 680x/650x (8b data, 16b address)? 8008 (8b,14b)/8080 (8b,16b)? z80 (8b,16b)?
+#       - 16b: 65c816 (8b external/16b internal/24b address)? ...
 #       - kinda like the belt cpu?
 #       - kinda like the barrel cpu?
 #       - kinda like conway's game of life?
@@ -361,6 +366,13 @@
 #         - i.e. 2x8-bit states and mux/carry/etc. flags could allow for a 16-bit alu
 #         - overflow/carry/etc. trigger state swap
 #         - bitslice idea all over again
+#           - memory bank... internal and external busses
+#           - internal bus is tag:message:opcode in/message:signal (flags) back to mc
+#           - external bus - propagate carry/remainder/overflow
+#           - 256x8 (2KB) could be wired up serially to
+#           - dual port? memory controller per bank with go/nop flag
+#           - pause downstreams as control is transfered between banks
+#           - memory controller controller reads external bus and directs traffic from bank to bank based on state
 #   - clock, program counter, stack, stack pointer, instruction pointer, interrupts, ...
 #   - overflow detection, remainder, etc.
 #     - test "${register[r#]}" -gt 255 # overflow detected; interrupt, etc.
