@@ -457,6 +457,8 @@
 # - array     : "arrayexists arrayvar" "isarray arrayvary" "createarray arrayvar" "savearray arrayvar" "uniqarray arrayvar"
 # - hash      : "hashexists hashvar"   "ishash hashvar"    "createhash hashvar"   "getkeys hashvar"    "haskey hashvar key" "savehash hashvar"
 #
+# cool subleq+eforth thing: https://howerj.github.io/subleq.htm
+#
 
 function showstack() {
   echo stack:
