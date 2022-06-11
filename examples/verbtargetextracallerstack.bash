@@ -822,10 +822,24 @@
 # - hash      : "hashexists hashvar"   "ishash hashvar"    "createhash hashvar"   "getkeys hashvar"    "haskey hashvar key" "savehash hashvar"
 #
 # cool subleq+eforth thing: https://howerj.github.io/subleq.htm
-# - subleq could be implemented with ternary operators, (statement==value)?(true):(false)
+# - subleq could be implemented with ternary operators, (statement{==,<=}value)?(true):(false)
 # - hmm
-# - "nested" oisc machine threads w/state...
-# - not super complicated
+# - "nested" oisc machine (threads w/state...?)
+# - build out "functions" for load/store/add/sub/mul/div/read/write/push/pop/saveimg/loadimg/...
+# - caller (or callee) saves program counter, stack pointer, instruction pointer, ... i.e., locations/state
+# - callee (or caller) does i/o w/proper sentinel values, jumps to right address
+# - probably caller manages?
+# - drops its target address/state into R3, sets proper == or <= eval for R1:R2 and jumps to own code if true
+# - othrwise reading the next 3x elements and runnin subleq again
+# - (R3 should be "dereferenceable" - indirect; R3 to store and jump instruction/stack/??? in R3, @R3 to load/jump from memory address stored in R3
+# - caller (or callee) sets back sp/pc/ip/... to restore, then does more i/o on ((R1==R2)||(R1<R2))?jmpip:rewind
+# - can do tail recursion? i.e., jump back to caller->caller->caller restoring sp/ip and incrementing pc
+# - not super complicated?
+# - need a way to keep the "clock" going - background func?
+# - a background process essentially has its own stack/sp/pc/ip/clock/... - make local cow, sync when update?
+# - state is a stack of stacks, serialized and pushed/popped/peaked
+# - stack up, heap down? vice versa?
+# - erlang but really, really low level?
 #
 
 function showstack() {
