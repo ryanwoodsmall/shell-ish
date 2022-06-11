@@ -579,6 +579,9 @@
 #           - remote: eval a call to a remote server (remote:[uri|schema|...]:[[[[-|user|key][-|:[pass|keyid]]]@]host[${defaultport}|:port]:/path/to/...]) - default is `file:///`, `fs:///...`
 #           - reified: could lookup/eval path inside to out to substitute public/privage key ids, encryption, encoding, etc, to obtain a full uuid -> reified path map
 #           - func: eval the function with name using stdin
+#           - epoch: 64-bit (signed) seconds since 19700101000000
+#           - date: current date? nice representation with flag? formatting? set access/modify timestamps?
+#           - offset: local time (utc[+|-]) offset
 #           - clock: (just a counter with with fullparentpath/global and optional divider...)
 #           - counter:[fullparentpath|global]:divider: figure out parent counter, creating one in lockstep with the current pc (default divider of 1) and loops around by default
 #             - ```
