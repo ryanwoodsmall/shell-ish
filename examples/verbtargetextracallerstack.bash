@@ -634,7 +634,10 @@
 #           - special flag vals in health (ok/critical/unknown/...|good/overflow/bad/missing/...) for serilized state and key/val/... in config
 #           - serialize to filesystem - remote interface... via toml+json+rest+curl+jq+...
 #           - `hab file upload ...` for state+service groups+organizations
-#           - steal butterfly (swim?), incarnation, health/config endpoints, etc.
+#           - steal butterfly (swim?), incarnation, health/config endpoints, etc. for distribution/state/etc.
+#           - could build a small (evalable!) chroot/jail/environment from seed+version, extract to the service's files directory under hash-version
+#           - "enter" into the service group via shell, noting service group
+#           - on exit, archive the extract dir to %{hash}, upload as new timestamped version
 #         - "link" functions - alias key in "source[sub[sub[to]]]" to something like `eval @{value[path[to[functin[type[element]]]]]}` - dispatch in root object handler
 #         - can essentially return (printf $(reifiedpath) || eval $(reifiedpath) || exec $(reifiedpath) and status
 #         - opens up `objalias`: `eval`/`print` element w/stdin (depending on type) creating stubs as needed
