@@ -339,8 +339,12 @@
 #             - ... many more
 #       - base on 680x/650x (8b data, 16b address)? 8008 (8b,14b)/8080 (8b,16b)? z80 (8b,16b)?
 #       - 16b: 65c816 (8b external/16b internal/24b address)? ...
+#       - could do abstract stack machine... layer register machine on top...
 #       - kinda like the belt cpu?
 #       - kinda like the barrel cpu?
+#       - kinda like a bitslice cpu? bus status/carry/overflow/next/last/cycle/reset/interrupt/...
+#       - kinda like a gate array?
+#       - kinda like a bunch of nested gate arrays with a clock driven by a flip-flop - or subleq >;)
 #       - kinda like conway's game of life?
 #       - kinda like computing from nothing but a switch?
 #       - kinda like bootstrapping the universe?
@@ -404,8 +408,353 @@
 #   - intermediate languages...
 #   - work up to c...
 #   - c compiler targeting virtual assembly
-#   - "dump state" for image is very lisp-y
-#   - boiling the oceans
+#   - forth (eforth on subleq?) first???
+#   - notes on notes on notes
+#     - "dump state" for image is very lisp-y
+#     - boiling the oceans
+#     - for copying functions/serializing, a `${#}` file descriptor can be opened read/write for reliable/safe eval/apply?
+#       - nested locks (stack) - no loops? dag?
+#     - might be easier than while/printf. and cleaner
+#     - bash has readonly function/variables, and they can be the same name...
+#     - a little oo but opens up a path to more structured datatypes/operations
+#       - could easily do a "super func" root object on create/copy, i.e.:
+#         - if `${FUNCNAME[0]}` is `main` or %{rootuuid:-0} we're the root/base Object object
+#         - `@{operator[/path/to/...]}` - below
+#         - configurable `${rootobject}` variable... multiple environments
+#         - objects nested have an id - base64 of type/element/permission with grouping? - that is in the "root" hash (r/o id "0")
+#         - objects need a parent id - root will be itself (0), acts as a dispatcher (just `eval "${@}"?)
+#         - each object has a global uuid -> full path map; create on access of empty element, generate uuid, lock pathmap for w, save %{pathmap{%uuid}}, unlock pathmap
+#           - each object has a global uuid -> full path map (hashed, see hashid); create on access of empty element, generate uuid, lock pathmap for w, save %{pathmap{%uuid}}, unlock pathmap
+#         - ... need good hash locking setup too... - gotta be a counter if multi-threaded/multi-process - if unlocked, take lock ( wait lock , lock, run, unlock )
+#         - could be used as... get this: pointers
+#         - have to check if you're the "last" - i.e. is my value less than top-of-stack, unlock and try again - cooperative... at best, could be a nightmare...
+#         - what am i building here, an abstract symbolic representation of a stack machine??? that i can implement a register machine/vm on??? whaaaaaa?????
+#         - objects need a symbolic name - `root` or `main` for the root - mark default `eval` function wrapper read-only
+#         - objects need a name - `root` or `main` for the root - mark default root `eval` function wrapper read-only
+#         - stack of parent id - creating a computer again
+#         - parent needs a list of all its children (directory entries/virtualvars/by type!)
+#         - every child with $(hashid) is in a subdirectory called `children`
+#         - nested lists that eventually just `printf` or `eval` themselves? - with types!
+#         - root would only ever exec, so would `exec exec ...` or `exec printf "${value}\n"` based on leaf type information
+#         - references would just `eval printf $(their own value)`
+#         - you just invented a lisp computer, player!
+#           - macro types: save/eval "raw" unescaped metalanguage/vars w/stdin, or fork a shell process off and `exec` leaf (bin) w/stdin?
+#           - would need wait flag for fork... "threads"
+#         - stack pointer, stack, etc. - `declare -a object_stack` - "top" will be "${#-2}" instead of -1
+#         - can jump to/rewind the stack by grabbing up to ${elements}, pushing those and jumping - eval/printf/exec based on tape
+#         - (would allow an iterator, and really need a counter anyway - could be a "type" to track state, and track "last updated"/timestamp in metadata and/or outside of fs
+#         - detect depth and `goto` or just `exec` the previous to replace current environment when you hit the root element?
+#         - `pushd` & `popd` - create fs snapshots with some hash/list/leaf value - nested, structured, save readability via below
+#         - `push` & `pop` - queue - lifo - ordered list
+#           - `shift`/`unshift` - same but stack - fifo - ordered list
+#         - `exec` or `run` to run (eval) whatever whatever is at value
+#         - variable substitutions "%{var}" & "%{var[%{index}]}: (and "%{instructionpointer}" "%{stackid}" "%{stackpointer}" "%{stack[%{stackid}]}=[]")
+#         - flags like %{readonly}, etc. (per-var? %{readonly[%{var}]}?) - both, by name with typeinfo
+#         - could add "signature"/encryption+flag and store in the versioned metadata w/public key id used for encrypting/verification, later decrypting with private key
+#         - and private key id/path for automatic decryption... (special keys, sig, etc. flags?)
+#         - versioned along with everything else...
+#         - things can only be "jump"-ed, printed, eval-ed, stored, deleted, have key set to value (and capture type), etc.
+#         - designate "special" type for `%{var}` designating function...
+#         - if function, eval that stored at `%{fullpathto%{var}[%{var}]}` with stdin
+#         - func: function, evaluates against stdin; list: (specific) raw bash list; hash/array: raw bash hash; var
+#         - `type`/`istype` command/var - return type of %{var}, true (0) whether it is matching 'type:[type:[type:[%{type]]]', otherwise no (1)
+#         - `state`/`updated` - global and obj level - command/var : toggle-able var that indicates if var has changed - set on access; return 1 if dne; otherwise read into var and return 0
+#         - recursive?!?!? flip need write bit to for ancestors
+#         - `sync`: write whats in memory as changed, creating on disk what's in memory (serialized, encoded, etc.)
+#         - starting at deepest leaves, writelock/create+withlock+writelock uuid/path, commit metadata (versioned?)
+#         - `@{{action|value}{|[%{selector}]}[%{index}]}` - "language" constructs expanded to bash evalables - map to virtual syscalls
+#           - dup, etc.: https://man7.org/linux/man-pages/man2/open.2.html#SEE_ALSO
+#         - ex:
+#         ` ```
+#           object sandwich {
+#             toggle:[|path/]sounds:[true|false]
+#             func:toggle {
+#               local %{boolalias['good','bad']}
+#               local %{boolmap[@{value[%{
+#               local %{true}=%{boolalias[0]}
+#               local %{false}=%{boolalias[1]}
+#               printf %{var[%{sounds}|-%{true}]} # default/executable/... type??? tracking too
+#               %{v}=%{var[%{sounds}]}
+#               %{var:sounds}?%{false}:%{true};
+#               printf %{v}
+#               %{v}?
+#               ...
+#           }
+#           ```
+#         - `known`: check if thing exists, 0 for yes, 1 for no - check memory dirty/marker for uuid; and if exists, say yes
+#         - objects can register themselves with a deleteable `new`-like function that is run on inception (locking///////)
+#         - reference counting too... on inception of path, backtrack, checking existence, marking dirty, etc. bump reference counter
+#         - when something is set/created/etc: lock, mark its global state hash value as dirty, create/stub/set object accordingly, toggle dirty states, unlock
+#         - ```
+#           objctrl [-d(default:${objectroot:="${HOME}/.object/root"}|-o fullpathtoobjstorage]
+#             [type|[known|exists]|[[-|mark]|[dirty|clean]]|ls|cat|cp|mv|rm|eval|[[-|sym]|hard]link|creat|touch|open[[-|rw]|r|w]|close|read|write|lock|unlock|[in|de][|cement]|[|un]mount|-(default:read:stdin)]
+#               [[[full|rela|path]|-(default:write:stdout)] [--(stop parsing)|] [args]]
+#           # if positional parameter 1 is - (action) will be read from stdin; otherwise action=${1}; shift
+#           # if positional parameter 1 is - (path) will be read from stdin; otherwise path=${i}; shift
+#           # if positional parameter 1 is -- (args) will be passed througn from stdin?
+#           ```
+#         - `object "/path/.../leaf" [action] [arguments]` wrapper - "realpath"/"hash"/"expand"/..., read from stdin, write to stdout, save state of hashid
+#         - xargs/eval-ish: /full/path
+#         - have to track current open r/w flags
+#         - can store "root" path as real location in filesystem - by default, like `~/.object/root` and fs is "virtual"
+#         - (shard - another level - hash sub "root" objects to a key, using shard controller map, hook eval-able syscalls to convert full path to compute shard hash, build full path)
+#         - each shard gets its own
+#         - root is not "derefernced" - if ${PWD} is in %{fullpath} -
+#         - full path stack for easy deref...
+#         - (... inheritance? no? okay)
+#         - (tmp stacks serialized to stacks and save/restore on jump...)
+#         - types:
+#           - uuid: own id (0 for root-root)
+#           - parent: id (uuid of parent) (0 for root-root); enum/list beyond root? [root:[-0|:uuid][-|:uuid][[-|:uuid[-|:uuid[...]]]]]
+#           - path: own full path
+#           - tombstone:(true|false)  - check self state recursively - if parent have a tombstone, toggle bool
+#           - tombstone[uuid] "bool map" and uuidtotombbstomb[uuid] to check?
+#           - hashid: recursive calculated aggregate hash to 0 (or %{rootuid} if not 0)
+#             - eval hashid="$(hashalg %{uuid}:[%{parent}:[ ... [%{parent}:[[%{parent}:[%{rootuuid}]]]]...]])"
+#               - if parents was a list, could also encode reachability info...
+#               - i.e., recursively for each parent down to %{rootuuid}, chase uuid->parent.uuid->...->rootuuid/0
+#               - on rm, make parents list (or stack?) [] (or just parents=uuid -> hashid==uuid: no parents - dead leaf)
+#               - cascade???
+#               - search for any dangling references to the uuid->hashid map; mark with tombstone/unreachable
+#               - depth-first - crawl into deepest heirarchy, check recursively if parent.uuid==parent.hashid until you hit root
+#               - recursively set all hashids of any dependent paths to uuid to "cut them off" and mark tombstone in object storage
+#               - mvcc/transactions/...
+#               - if parent.hashid==parent.uuid&&parent.hashid!=root.uuid->terminal/unreachble/mark tombstone, set hashid->uuid/uuid->hashid maps to uuid
+#               - (((uuid==hashid)&&(hashid==rootuid)&&(rootuuid!=[0|rw-/protectedroot])))&&reachable||unreachable
+#               - can reconstrcuct paths from actual fs paths, i.e., hashid->path/path->hashid map
+#               - find all metadata objects in store, determine if tombstone, ressurect by removing tombstone(s) recursively
+#               - can freeze/unfreeze (makero/makerw)+tombstone state this way as well
+#               - recursive "copy" of frozen objects to new name in store - freeze, snap to a diff name, unfreeze
+#               - garbage[uuid]=(true|false) - bool - if true, trace to root and mark full depth of uuid w/tombstone+depth+...
+#               - garbage[path]=(true|false) - bool - if true, check leaf @ path, trace to root and mark full depth of uuid w/tombstone until non-tombstone parent is found
+#           - root: (real/full?) fs path of object store (can pushd/popd into virtuals for relative paths!)
+#           - rootuuid: by defualt "0", can set to a specific %{parent}:%{uuid} to alter paths
+#           - roottype: object/fs/remote/distribution/...
+#           - uri: a locator with types+subpaths all reified - use root+roottype+rootuid to figure out mount/namespace/leafs/leafstatus/reachability/dereferencing/... etc.
+#           - children: list of child uuids+computed hashid?
+#             - `[/full/path/to/uuid]/children/[uuid]/[type]/[k,v]` - in memory [t:[k,v]] - recursive reification/map of/to/... contents
+#             - `[t:[k,v]]` defaults to hash of k at /full/path/to/parent/children/type/[k]/[v]
+#             - nested... would allow iterables - auto counters
+#             - full path is made from concatentating uuids together, hashing, prepending type: - > [type:[[type:[[key,value]|[list]|value][value]]]:[[key,value]|[list]|[value]]]
+#             - hashid in {sub-}children: loop/cycle/...
+#           - raw: cat whatever's in path - [exist&&notdirty: lock,cat,unlock] || [[exist&&dirty||dne]:lock,rewrite,togglestate,cat,unlock]
+#             - basically open/read/write/{un,}lock/close/creat/delete/eval for others w/stdin and proper dispatch based on type...
+#             - including binary data!
+#             - wrapper: default is basically func: type with 'sh -c "cat %{raw[%{uuid}]}"' with full reification/derefence - and store actually data in content.raw
+#           - file: literal file contents stored at $(reifiedpath)
+#           - fd: file descriptor (and/or fh: file handle)
+#             - fdstack[#]
+#             - need state - only 255 fds - if overflow push fd:/path/to/../file onto stack, close fd (write/seralize/etc), openfd pointing at new file read/write/etc.
+#             - stdin/stdout always wired up
+#             - fdstack pointer -> uuid?
+#           - prog: run $(reifiedpath) with stdin+arguments: ( bash -c "$(reifiedpath) "${@}" < /dev/stdin )
+#             - process args until -- or ${@} exausted, then read stdin
+#           - bin: "binary data" - encoded?
+#             - exe:[-|raw:[-|interpreter]] - "raw" flag - use file descriptor? fd table/stack...? at object?; preface with "interpretter" - i.e., "bash -c", "ld.so", ...
+#           - keys: list of keys at path - if [k,v], provide k, if [] provided list of indexes, if v printf "%{path}=%{path[%{fullpath}]}" (feasible? dynamic?)
+#           - type: have to know own "leaf" type to know how to behave...; if parent.uuid==rootuuid&&hashid!==(uuid/sentinel)
+#             - ultimate "leaf" type is always [k,v] map ([:] in groovy!) or [] ordered list or expandable agregate? [::] for type:key:value shortcut?
+#             - as always, nest; can use [type:k2:[type:k1:[[type:k0:v0]]]] for "executables" etc.
+#             - need a "terminal" marker - depth, unkown, tombstone, etc.
+#             - /root/[{type}:hashed{uuid}] -> /root/hashed{uuid}/[type]/[key]/.../[value] - et each level...
+#             - with "type inference" - i.e., "i'm type X, i'm going to do either eval or printf" on refernce/lookup
+#             - "overload": unbounded/unsigned list ++ increments, -- decrements, ...
+#             - like lua tables, kinda?
+#           - latch: - callback list to set something on exec, unset on finish (lock: bus, singleton, semaphore, inc/dec counter,...) ['pre','post']
+#           - lock: - set un-/locked flag on path?
+#           - expr: bash math expression with %{v} and %{v}
+#           - {eval,exec}{{,cmd},{map,array,hash},list}: properly type-eval or fork/exec? whatever is stored at path
+#           - jump: - jump:[[-|pc]|sp|ip][-|:conditional] save stack(s) and eval indrect value at $target
+#           - value: printf "%{path[...]}"
+#           - fsloc: print evalable full path, doing shard/encoding/etc. resolution in-flight - needs a "full path reifier!"; reify state recursively
+#             - symlinks+fsloc allow sort of namespaces; an object store is "rooted" somwhere and symlinks can be recursively nested w/type???
+#             - an object store root can be a "namespace" - another object store root id 0, parent id/fullpath/uuid/etc. set accordingly
+#             - all paths must be reifiable to a parseable path: type+value; sy
+#           - list: bash list, evalable
+#           - hash/array: same, bash hash/associative array, properly quoted
+#           - enum: (evalable #-indexed hash with sub expansion/eval/display/... - preserve order, essentially a list with magic
+#           - {sym,}link: symbolic link to path - if a symlink type is detected, exec/pushd/popd/etc as appropriate from proper path
+#           - hardlink: hard link: full path to item's content
+#           - mount: (virtual?) namespace/filesystem/etc. at path - new "root" object symlinked to {shard,distribution}{fullpath|-root}
+#           - remote: eval a call to a remote server (remote:[uri|schema|...]:[[[[-|user|key][-|:[pass|keyid]]]@]host[${defaultport}|:port]:/path/to/...]) - default is `file:///`, `fs:///...`
+#           - reified: could lookup/eval path inside to out to substitute public/privage key ids, encryption, encoding, etc, to obtain a full uuid -> reified path map
+#           - func: eval the function with name using stdin
+#           - clock: (just a counter with with fullparentpath/global and optional divider...)
+#           - counter:[fullparentpath|global]:divider: figure out parent counter, creating one in lockstep with the current pc (default divider of 1) and loops around by default
+#             - ```
+#               increment() {
+#                 local -i m=1
+#                 # stored: counter[@{reified[/path/to/...][-:divider]}]
+#                 # passed what? ${current} ${divider} ${parent} ${depth} ...????
+#                 # if there's a parent !global, tick that, recursively
+#                 # if there's no parent in parent, just bump to ${pc}[:${divider}], then bump counter to value of "anonymous"/pc counter mod 1 or divider
+#                 if [[ ${#} -ge 2 ]] ; then
+#                   m=${2}
+#                 fi
+#                 checkorcreatecounter "${1}" &>/dev/null
+#                 local -i n=$(getcounter "${1}")
+#                 ((n++))
+#                 eval export "declare -i counter["${1}:[-|parent:...]${m}"]=$((${n}%${m}))"
+#               }
+#               ```
+#           - signedcounter: hash of [{{,+},-}#]=val
+#           - trigger: increment counter/eval something on access - increment/decrement could auto trigger parents to root, then trigger any children with triggers
+#             - automatic reference counting...
+#             - automatic toggle firing... - per object flip-flop...
+#           - table: {func,var,type,object,generic} tables - map path to path of given type - lua, again
+#           - state: toggle for object(:this or .this?)/leaf ['clean','dirty'] - find dirty leaves, mark parents dirty recursively
+#           - write data+toggle leaf clean, repeat for all leaves, when object has no dirty leaves, mark clean
+#           - toggle: toggle:name[:true[:false]] - alternate between true/false or two custom values
+#           - archive: archive representation - archive:[[-|tar]|[cpio|pluggable]][:false|autoextractbool]
+#             - default to tar; on write, stream stdin to 'tar -cvf $(reifiedpath) - 1>&2'; capture stdout to a list and return serialization...
+#             - read to from file to stdout via 'tar -xf - < $(reified path)'
+#           - lifo: and fifo:
+#             - queue: ordered [] list - fifo - enqueue (push on end), dequeue (shift off front), shift # (shift # number off front)
+#             - stack: orderd [] list - lifo - push/pop/shift #: (for i in $(seq ${#[@]} -1 0) { if (( ((${i}-1)) == 0)) ; then break ; else eval "a[${i}]="${a[$((${i}-1))]}" ; fi ; a[0]="${@}")
+#             - peak: poke: insert: delete: - look/set/... value in list
+#             - apply stack/queue - canonicalize from different ends
+#           - register:[-|indirectflag] - yeah - either get a value or eval the value stored in register
+#           - mem: "binary memory?" - serialized state? w/type?
+#           - ref: jump to seralized mem?
+#           - literal: text stored unparsed "eval" for macro
+#           - macro: literal: to eval w/stdin
+#           - serialize: special trigger; save all leaves w/full paths to their place in the object store and return canonical "/path/to/item/[key,index,var,func,...]=val" to stdout
+#           - deserial: oppsoite trigger - read stdin and set path to val - rebuild uuid<->hashid mappings, instantiate in memory
+#             - out: all reachable... serialize; not reachable, tombstone
+#             - in: set reachable on value, then trace parent back top stored "rootuuid" marking every step on the path reachable
+#           - body: recursively serialize into object hash with state
+#           - {json,yaml,toml,...}: structured version of searlized data; find reachable leaves, get uuid+hashid, seralize; what clarity? yaml :|, json "\n" escapes, ...
+#         - "link" functions - alias key in "source[sub[sub[to]]]" to something like `eval @{value[path[to[functin[type[element]]]]]}` - dispatch in root object handler
+#         - can essentially return (printf $(reifiedpath) || eval $(reifiedpath) || exec $(reifiedpath) and status
+#         - opens up `objalias`: `eval`/`print` element w/stdin (depending on type) creating stubs as needed
+#         - (deep copy - a "copy" just just store a jump ref:uuid? on write, allocate new storage and update links
+#         - (copy-on-write here could be an object flag... - version your self to "latest" _or_ stored timestamp when you're told to save/serialize/...)
+#         - individual file snapshots - `content{,.meta,.children/incoming}{,.tombstone}`
+#         - could branch at snapshots, or create a new environment at `%{stack}` with `@{reachability[%{path}]}` using sym/hardlinks
+#         - linear, "just" create a hardlink to the other object in the other environment
+#         - "easy" copy-on-write - add/del reads old content, pointed to by symlink, changes/exec/outputs/etc. to new datafile, update symlink
+#         - read "content.base" -> modify -> write "content.%{ts}" -> update "content" symlink
+#         - could also generate diffs, encode timestamps+parent in metadata, "replay diffs"
+#         - on quiesce/unsnap/popd/... copy current "$(realpath content)" to "content.base and update symlink
+#         - could further timestamp ("content.meta.timestamp" file with state!!!)
+#         - multiple versions of content prefixed with `@{time{path[to[item[element]]]}}` or postfixed with stored `%{ts}`
+#         - `fork` command that forks/execs whatever is at path[to[...]] with stdin - wait/no wait flag fog &/wait()/etc.
+#         - `map` type that returns data in raw bash hash map that can be `declare -A varname=...`
+#         - `toggle` type+function/command that checks if null and sets rc to 'shell true' (0) if not set, other wise %{var%%!1}, save state
+#         - `encode`/`decode` command/type - receive raw data, convert to textual format (base64?), and store, with encoding type
+#         - encoding hook with like `{en,de}code{,:type}` with a hook to run default encode routine
+#         - override default encode with, custom scheme falling back to base64? could combine schemes/overrides/specialization for encrypt+signed+encoded content
+#         - could do at least semi-efficient "stacks of diffs" for content to rollback/forward
+#         - flip-flop, combine with counter that starts at 0 and goes up indefinitely, OR bounded by an optional max
+#         - per-object counter and global/root counter+timers - per "tick" (full "instruction"/eval) increment global program counter
+#         - object counters would need to be "registered" globally with an optional divider (%%?)
+#         - counters are essentially stacks: when (clamped!!!) global overflow is detected, reset the stack to 0, and any global counters that aren't specifically clamped to 0
+#         - eval the "root" object, reset any global timers, do recursively (callbacks...)
+#         - actually pre-/post- evalers - act on detected type, using object[hashid][hash,func,var,listindex,...] tables for dispatch w/type info
+#         - could have a creation timestamp and an "epoch" counter w/nanosecond resolution - cron/schedeuler like setup to eval "if now > {%{diff} %% something}!!
+#         - indirect clocks - fire (send interrupt when reset) by eval-ing whatever is at passed stdin - need type here too, for nested
+#         - register a clock with `root:[name[:name[|:divider]]]` and check/increment object clocks
+#         - with reflection, objects could each have their own stack... micro programs
+#         - image debug save could literally restore entire set of stacks/clocks/timers then jump into debug and wait for command (continue/eximine/...)
+#         - save debug info `set -x ; exec 2>>${object}_debug.out`
+#         - save session info by tee-ing input from the command processor, rlwrapped... paren/brace/bracket matching in interactive console...
+#         - with transaction logs and reachability status, could store essentially "any given state"
+#         - full call graphs could be generated in debug...
+#         - type plugins... - encrypted files, signing keys, ...
+#         - keys _must_ be bash naming compatible if proper i/o between the two, but base64 is ugly...
+#         - (storage) everything is a path/.../k/children/v, dir - content in `content` file
+#         - name, full path, parent id, child ids, update state flag? stored in `content.meta.XXX` - structured format... json, toml, yaml, ... ???
+#         - becomes a virtual object store at that point...
+#         - a programmable object store. interactive. dude.
+#         - ABSOLUTELY need tombstones - `content.tombstone`
+#         - saveable stack - basically a transaction log of how we got to now
+#         - snapshot: rewind, append to function run it again, then jump to self...
+#         - can then basically crawl the filesystem and go until you see a tombstone, etc.
+#         - `move` or `copy` (or 'load'/'store'...) - essentially copy whatever at "${source}" to "${target}", preserving state/creating paths as necessary
+#         - `findable at [reference [ reference ...]] %{stackid}` ... - read children
+#         - mark all stack ids unreachable...
+#         - keep a stack id directory with "reachable" by starting at all reachable children (subdir/subdir/subdir/content) and working backwards
+#         - mark each parent unreachable and do it again until only root and leaf are reachable
+#         - mark every path to every leaf reachable
+#         - cull any unreachable
+#         - capturing stack pointer and "next" is important for speedup on state import
+#         - parent id could be manually set, so need incoming ids in structured format
+#         - object id (sha-256 is sounding better) everywhere.. `content.tombstone` will need to be an ordered list
+#         - need depth tracking - need jump...
+#         - all but leaf elements (functions/methods, instance members) will be a reference
+#           - leaf elements - special treatment? or `eval printf ${objecthash[${objecthashid}]}`
+#           - actual nesting too? `${rootobject[${sub[${subsub[${subsubub[${index/key}]}]}]}]}`
+#           - add an `o` object type to `h`/`a`/`f` hash/array/function key "language"
+#         - access will dereference - hard? lol, yes
+#         - mark the source function readonly since it has delegates
+#         - create from stub/copy the source function to the target function
+#         - prepend the new function with `super=${sourcefunction}`
+#         - append the new function with `eval "${super}" "${@}"
+#         - "garbage collection" - remove any references that are no longer reachable from root; tombstones?
+#     - i.e., noted elsewhere but for "object" as the name of a function/variable, have getters/setters
+#     - when items can serialize themself... "objects" could be nested, i.e. a hash of hashes of arrays of...
+#     - and accessed via `varname "['hashkey'][#]'"` - default get, with `get`, `set` and `eval` (`add`? `del`? types?) as reserved words
+#     - need a permission marker too... `makero`/`makerw` - `:{r,w}`
+#     - `add type "name" "definition'` / `del "definition"` list/array, hash, function/callable, item/element/var object (nesting!)
+#     - one argument is just `get` on the value at (sub-(sub-(...)))hash/array
+#     - two or more is eval
+#     - types types types - per hash idea above `object[{type}:{element}{permission}_{t}:{e}:{p}_...]`
+#     - depth marker again... grouping w/`{`/'`}` should work with hash keys
+#     - `nexthashid` - lockable placeholder? - empty string by default? save uuid to nexthashid, w/lock, then save hashid[uuid]=$(hashid uuid), generate new nexthashid
+#       - collision checking! if exists and not tombstone, it's reachable, so overwrite; if doesn't exist/tombsone, check freeze state and either
+#       - ... replace/mark reachable/return success if not (dne|tombstone)&!frozen; return error if frozen tombstone
+#       - force flag - unfreeze, overwrite, mark reachable, ...
+#       - this is all stack handling...
+#     - async/sync flag - flush immediately or mark dirty until sync/sweep/access/write/delete/...
+#       - crud... transactions... again
+#       - arbitrary stacks - get id for next, push on end, ...
+#     - lookup formats?
+#       - `["[root[hashname[hashname[listname[${index}]]]]]"]`
+#       - `["object[object[key][key][key|list]]"]`
+#       - `["object.key.[object.key.key.list].key.list.func()..."]` - this one might be HARD
+#       - ... but with var+func same named, prepended with TYPE, the evaluator can just figure out what to do
+#       - `/path/to/subdir/...` - check type and act (dispatch/eval w/stdin); unpack arrays (hashes!) with '[...]', '[@]', etc...
+#       - ... i.e if `...[ [ [ []]]` and/or `...[][]` - convert to canonical form and set up reference
+#         - '/path/to/sub/subsub/.../leaf' - w/type info is canonical; looks like fs
+#       - add a debug var/macro/flag, it's just a "start at root, jump through stack from start until "next" (last item in ${#[@]} format) is seen
+#       - set some debug flags, run it, do some debug stuff (break into set -x session?) then quit
+#       - need a hash of lists for "what's in-flight in this state?"
+#       - would essentially say "this is the current state of value at the current object"
+#       - with explicit func VERSIONING - snapshot/substitute/version entire system... man
+#       - var names can can be dereferenced with `declare -n` - setup stack and run `exec ${indirect}`
+#       - all just keys
+#     - flag to sync on pc overflow (recursive, slow - every uuid that's marked dirty, start at leaf and commit parent until %{rootuuid})
+#     - removing readonly elements...
+#       - gdb for state/memory access lol https://stackoverflow.com/questions/17397069/unset-readonly-variable-in-bash
+#     - `new object`/`object new` - "enter" something that just evals - gets an id, etc., keeping track of type and depth
+#     - `enter`/`exit` an object - `begin`/`commit`/`rollback` as well - transactions with `object value "value"`
+#     - `object get/show "path[to[node]]"` - show **['key1','key2','key3',...']** or **${value}** at requested level
+#     - functions just get automatically called?
+#     - lists can have first ${l[0]}, last ${l[$((${#l[@]}-1))]}, top (pushable) ${l[${#l[@]}]}='' accessors
+#     - need a function marker too! `:c` (callable? not enough letters)
+#     - would need to track read/write status (parser/macro helper) for serialization
+#     - upon entry/exit acting on a temp array/hash, the previous temp value is deserialized+pushed/popped+eval on a stack
+#     - `declare -I` to copy from a var at the previous scope to a var at the current one
+#       - inheritance. again. force/exec...
+#     - `type -t` to test if something is a function/alias/command/file/etc. (some `declare -f/-F` overlap)
+#       - if not "executable" via type -t, figure out
+#     - "readonly[{key,index,var,func,...}[path]]" - hash of read-only paths, based on type; each k can be a key/list index/var/func/...
+#       - keep track of var+key/listindex/... type and readonly the hashid
+#     - serialized state would require a recursive dump, thus reachability
+#     - state could just be a sourceable `.object/environment.bash_object` filesystem file
+#     - hook profile/shrc ; hook `eval` evaluator for ticks/clocks/timers/counters - read input, reify, hash, eval with type determinmation...
+#     - snapshot would dump a serialization of all the registered objects (can ignore "anonymous" ones?) to file
+#     - finally... when objects can serialize themselves, the whole state can be preserved
+#     - eval on startup, serialize on shutdown. bang, you have a computer with saved states
+#     - bash has a parsing flag to interpret symbols like "$" or not, we'd need something similar for macro creation
+#     - basically like every programming lexer/parser/compiler/shell/... but very much lisp/scheme
+#     - "flip-flop" toggle drives X-bit global clock that drives program counter
+#       - global clock is just a bunch of serial i/o flip flops on a bus that detect overflow and reset to 0 if ${MAXPC} reached
+#       - reset signal: set to zero and send off to flip flop array counting up...
+#       - 1/0 -> [1/0,1/0,1/0,..,n] -> ...: [0|1]->[[0|1]|[[0|1]|[[[0|1]|[[0|1]|[0|1]]]]]] ... msb/lsb. mested. etc.
+#     - type coercion - k,v/list/var/... - any value can trigger like named function at same path with type, depth, value of self? changing type as needed
+#       - reflection w/getdepth() parsing path
+#       - is this mongo or redis?
 #
 # - callbacks?
 #   - crosware...
