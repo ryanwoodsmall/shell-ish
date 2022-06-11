@@ -628,6 +628,11 @@
 #             - in: set reachable on value, then trace parent back top stored "rootuuid" marking every step on the path reachable
 #           - body: recursively serialize into object hash with state
 #           - {json,yaml,toml,...}: structured version of searlized data; find reachable leaves, get uuid+hashid, seralize; what clarity? yaml :|, json "\n" escapes, ...
+#           - env: hash of ( ['ENVVAR1']="val1", ['ENVVAR2']="val2", ... ) - inherit _this_, may be easier? `pushenv`, `withenv`,... - deference recurisevely?
+#         - derferencing uuid or hashid - deref[hashid[hash]]=uuid, deref[uuid]=hashid - bidirectoinal map?
+#         - chef habitat's config endpoints consume toml and emit json(/yaml/toml/...) - could heirarchical store state/counters/locks/... with something similar
+#           - special flag vals in health (ok/critical/unknown/...|good/overflow/bad/missing/...) for serilized state and key/val/... in config
+#           - serialize to filesystem - remote interface... via toml+json+rest+curl+jq+...
 #         - "link" functions - alias key in "source[sub[sub[to]]]" to something like `eval @{value[path[to[functin[type[element]]]]]}` - dispatch in root object handler
 #         - can essentially return (printf $(reifiedpath) || eval $(reifiedpath) || exec $(reifiedpath) and status
 #         - opens up `objalias`: `eval`/`print` element w/stdin (depending on type) creating stubs as needed
