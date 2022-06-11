@@ -440,6 +440,7 @@
 #         - you just invented a lisp computer, player!
 #           - macro types: save/eval "raw" unescaped metalanguage/vars w/stdin, or fork a shell process off and `exec` leaf (bin) w/stdin?
 #           - would need wait flag for fork... "threads"
+#           - fork / exec with tini either in foreground or backgroup to reparent and reap children?
 #         - stack pointer, stack, etc. - `declare -a object_stack` - "top" will be "${#-2}" instead of -1
 #         - can jump to/rewind the stack by grabbing up to ${elements}, pushing those and jumping - eval/printf/exec based on tape
 #         - (would allow an iterator, and really need a counter anyway - could be a "type" to track state, and track "last updated"/timestamp in metadata and/or outside of fs
