@@ -633,6 +633,8 @@
 #         - chef habitat's config endpoints consume toml and emit json(/yaml/toml/...) - could heirarchical store state/counters/locks/... with something similar
 #           - special flag vals in health (ok/critical/unknown/...|good/overflow/bad/missing/...) for serilized state and key/val/... in config
 #           - serialize to filesystem - remote interface... via toml+json+rest+curl+jq+...
+#           - `hab file upload ...` for state+service groups+organizations
+#           - steal butterfly (swim?), incarnation, health/config endpoints, etc.
 #         - "link" functions - alias key in "source[sub[sub[to]]]" to something like `eval @{value[path[to[functin[type[element]]]]]}` - dispatch in root object handler
 #         - can essentially return (printf $(reifiedpath) || eval $(reifiedpath) || exec $(reifiedpath) and status
 #         - opens up `objalias`: `eval`/`print` element w/stdin (depending on type) creating stubs as needed
@@ -817,6 +819,10 @@
 # - hash      : "hashexists hashvar"   "ishash hashvar"    "createhash hashvar"   "getkeys hashvar"    "haskey hashvar key" "savehash hashvar"
 #
 # cool subleq+eforth thing: https://howerj.github.io/subleq.htm
+# - subleq could be implemented with ternary operators, (statement==value)?(true):(false)
+# - hmm
+# - "nested" oisc machine threads w/state...
+# - not super complicated
 #
 
 function showstack() {
