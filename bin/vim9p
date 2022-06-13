@@ -44,7 +44,7 @@ declare -a args=()
 for ((i=0;${#}>0;i++)) ; do args["${i}"]="${1}" ; shift ; done
 for ((i=0;i<${#args[${i}]};i++)) ; do debugecho "args[${i}]: ${args[$i]}" ; done ;
 
-declare -i la="((${#args[@]}-1))"
+declare -i lastarg="((${#args[@]}-1))"
 debugecho "lastarg: ${lastarg}"
 
 declare ninepuri="${args[${lastarg}]}"
