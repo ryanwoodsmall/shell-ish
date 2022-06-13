@@ -78,5 +78,6 @@ debugecho "write: successfully wrote ${tempfile} to ${ninepuri}"
 if [[ "${rmtempfile}" == "true" ]] ; then
   debugecho "rmtempfile: true, removing ${tempfile}"
   rm -f "${tempfile}" || failexit "could not remove ${tempfile}"
-  debugecho "rmtempfile: succesfully removed ${tempfile}"
+else
+  debugecho "rmtempfile: not removing ${tempfile}"
 fi
