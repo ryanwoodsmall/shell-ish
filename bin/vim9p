@@ -5,6 +5,7 @@
 # - edit
 # - write the file back to the same location on 9p
 #
+# *only* checks *last* element for 'transport!hostname!port:/path/to/file.ext'
 # 9p rdwr mode should work, but probably needs ':w!tee' to write?
 # - or probably not since it's a muxed stream, see socat...
 # socat+9p rdwr w/pipe+exec continuously reads/rewrites the remote
@@ -59,12 +60,6 @@ for ((i=0;i<${#args[${i}]};i++)) ; do debugecho "args[${i}]: ${args[$i]}" ; done
 declare -i lastarg="((${#args[@]}-1))"
 debugecho "lastarg: ${lastarg}"
 
-if [[ ! "${args[${lastarg}]}" =~ !*! ]] ; then
-  debugecho "args: last arg does not contain a 9p address, starting vim"
-  vim "${args[@]}"
-  exit ${?}
-fi
-
 declare ninepuri="${args[${lastarg}]}"
 debugecho "ninepuri: ${ninepuri}"
 
@@ -72,6 +67,13 @@ declare ninepaddr="${ninepuri%:*}"
 ninepaddr="${ninepaddr#9p://}"
 ninepaddr="${ninepaddr#9P://}"
 debugecho "ninepaddr: ${ninepaddr}"
+
+# match 'alnum!*!portnum' to 9p format
+if [[ ! "${ninepaddr}" =~ ^[A-Za-z0-9]+!.*![0-9]+$ ]] ; then
+  debugecho "ninepaddr: does not look like a 9p 'prot!host!port' address, starting vim"
+  vim "${args[@]}"
+  exit ${?}
+fi
 
 declare ninepfile="${ninepuri##*:}"
 debugecho "ninepfile: ${ninepfile}"
