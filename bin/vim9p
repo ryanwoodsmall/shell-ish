@@ -53,6 +53,8 @@ declare ninepuri="${args[${lastarg}]}"
 debugecho "ninepuri: ${ninepuri}"
 
 declare ninepaddr="${ninepuri%:*}"
+ninepaddr="${ninepaddr#9p://}"
+ninepaddr="${ninepaddr#9P://}"
 debugecho "ninepaddr: ${ninepaddr}"
 
 declare ninepfile="${ninepuri##*:}"
