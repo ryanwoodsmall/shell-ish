@@ -21,8 +21,10 @@ set -o pipefail
 : ${vimargs:=""}
 : ${rmtempfile:="false"}
 
+scriptname="$(basename $(realpath "${BASH_SOURCE[0]}"))"
+
 function failexit() {
-  echo "$(basename $(realpath "${BASH_SOURCE[0]}")): failure: ${@}"
+  echo "${scriptname}: failure: ${@}"
   exit 1
 }
 
@@ -40,12 +42,12 @@ function debugecho() {
 
 declare -a args=()
 for ((i=0;${#}>0;i++)) ; do args["${i}"]="${1}" ; shift ; done
-for ((i=0;i<${#args[${i}]};i++)) ; do debugecho "$i : ${args[$i]}" ; done ;
+for ((i=0;i<${#args[${i}]};i++)) ; do debugecho "args[${i}]: ${args[$i]}" ; done ;
 
-declare -i li="((${#args[@]}-1))"
-debugecho "li: ${li}"
+declare -i la="((${#args[@]}-1))"
+debugecho "lastarg: ${lastarg}"
 
-declare ninepuri="${args[${li}]}"
+declare ninepuri="${args[${lastarg}]}"
 debugecho "ninepuri: ${ninepuri}"
 
 declare ninepaddr="${ninepuri%:*}"
@@ -56,22 +58,23 @@ debugecho "ninepfile: ${ninepfile}"
 
 declare tempfile="$(mktemp)"
 debugecho "tempfile: ${tempfile}"
-debugecho "replacing ${args[${li}]} with ${tempfile} to pass to vim"
-args[${li}]="${tempfile}"
+debugecho "tempfile: replacing ${args[${lastarg}]} with ${tempfile} to pass to vim"
+args[${lastarg}]="${tempfile}"
 
 debugecho "9p read cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} read ${ninepfile}"
-"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" read "${ninepfile}" > "${tempfile}" \
-|| failexit "could not read ${ninepuri} to ${tempfile}"
+"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" read "${ninepfile}" > "${tempfile}" || failexit "could not read ${ninepuri} to ${tempfile}"
+debugecho "read: successfully read ${ninepuri} to ${tempfile}"
 
 debugecho "vim cmdline: ${vimcmd} ${vimargs} ${args[@]}"
-"${vimcmd}" ${vimargs} ${args[@]} \
-|| failexit "vim exited with non-zero status"
+"${vimcmd}" ${vimargs} ${args[@]} || failexit "vim exited with non-zero status"
+debugecho "vim: exited cleanly"
 
 debugecho "9p write cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} write ${ninepfile}"
-"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" write "${ninepfile}" < "${tempfile}" \
-|| failexit "could not from ${tempfile} to ${ninepuri}"
+"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" write "${ninepfile}" < "${tempfile}" || failexit "could not from ${tempfile} to ${ninepuri}"
+debugecho "write: successfully wrote ${tempfile} to ${ninepuri}"
 
 if [[ "${rmtempfile}" == "true" ]] ; then
-  debugecho "rmtempfile is true, removing ${tempfile}"
-  rm -f "${tempfile}"
+  debugecho "rmtempfile: true, removing ${tempfile}"
+  rm -f "${tempfile}" || failexit "could not remove ${tempfile}"
 fi
+debugecho "rmtempfile: succesfully removed ${tempfile}"
