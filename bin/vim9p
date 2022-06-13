@@ -16,6 +16,10 @@
 set -eu
 set -o pipefail
 
+# turn off history expansion for '!' - equivalent?
+set +H
+set +o histexpand
+
 : ${vim9pdebug:="false"}
 : ${ninepcmd:="9p"}
 : ${ninepargs:=""}
