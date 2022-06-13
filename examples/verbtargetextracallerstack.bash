@@ -292,6 +292,9 @@
 #             - need memtag#? will be "first acknowledged" since we dump to bus
 #           - should memory registers be able to latch the bus? "process message # right now (just shift off packet), then unlatch"
 #             - essentially locking, would probably need "commands" back to controller in message response, act accordingly in controller
+#             - variable set, mark read-only, unset - simple-ish semaphore
+#               - "${lockvar}" (or ${locks[${lockname}]} - could create on demand...) is either equal to 0 or a function name
+#               - check-wait loop; set lock var to own name; lock+verify by reading back own name; else unlock and back to check-wait; do stuff; unlock
 #             - would open up length tag - i.e., start processing and don't stop until you've done X things
 #             - memory register arrays would need another pc each, 8-bit, again?
 #             - detect tag -> reset memory registry pc -> start counting and pulling packets off bus
