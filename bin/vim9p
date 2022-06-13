@@ -30,7 +30,7 @@ function failexit() {
   exit 1
 }
 
-for c in "${ninepcmd## *}" "${vimcmd## *}" ; do
+for c in "${ninepcmd## *}" "${vimcmd## *}" sha256sum ; do
   command -v "${c}" &>/dev/null || failexit "${c} not found"
 done
 
@@ -69,9 +69,25 @@ debugecho "9p read cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} read ${nine
 "${ninepcmd}" ${ninepargs} -a "${ninepaddr}" read "${ninepfile}" > "${tempfile}" || failexit "could not read ${ninepuri} to ${tempfile}"
 debugecho "read: successfully read ${ninepuri} to ${tempfile}"
 
+# compare this so we're not unnecessarily writing across the network
+osha256sum="$(sha256sum ${tempfile} | awk '{print $1}')"
+debugecho "tempfile: original sha-256 sum ${osha256sum}"
+
 debugecho "vim cmdline: ${vimcmd} ${vimargs} ${args[@]}"
 "${vimcmd}" ${vimargs} ${args[@]} || failexit "vim exited with non-zero status"
 debugecho "vim: exited cleanly"
+
+nsha256sum="$(sha256sum ${tempfile} | awk '{print $1}')"
+debugecho "tempfile: new sha-256 sum ${nsha256sum}"
+
+debugecho "tempfile: comparing stored sha-256 sums"
+debugecho "tempfile: old ${osha256sum}"
+debugecho "tempfile: new ${nsha256sum}"
+
+if [[ "${osha256sum}" == "${nsha256sum}" ]] ; then
+  echo "${scriptname}: ${tempfile} unchanged, not rewriting to ${ninepuri}" 1>&2
+  exit 0
+fi
 
 debugecho "9p write cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} write ${ninepfile}"
 "${ninepcmd}" ${ninepargs} -a "${ninepaddr}" write "${ninepfile}" < "${tempfile}" || failexit "could not from ${tempfile} to ${ninepuri}"
