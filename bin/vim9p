@@ -9,6 +9,7 @@
 # socat+9p rdwr w/pipe+exec continuously reads/rewrites the remote
 # vipe from moreutils may work? http://joeyh.name/code/moreutils/
 # should this be "edit9p"?
+# probably need a trap to remove tempfile in failexit
 #
 
 set -eu
