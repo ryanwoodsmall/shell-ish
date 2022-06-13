@@ -10,7 +10,7 @@
 # - or probably not since it's a muxed stream, see socat...
 # socat+9p rdwr w/pipe+exec continuously reads/rewrites the remote
 # vipe from moreutils may work? but, perl. http://joeyh.name/code/moreutils/
-# should this be "edit9p"?
+# should this be "edit9p"? obey EDITOR?
 # probably need a trap to remove tempfile in failexit? no.
 #
 
@@ -97,7 +97,6 @@ debugecho "vim: exited cleanly"
 
 nsha256sum="$(sha256sum ${tempfile} | awk '{print $1}')"
 debugecho "tempfile: new sha-256 sum ${nsha256sum}"
-
 debugecho "tempfile: comparing stored sha-256 sums"
 debugecho "tempfile: old ${osha256sum}"
 debugecho "tempfile: new ${nsha256sum}"
@@ -108,7 +107,7 @@ if [[ "${osha256sum}" == "${nsha256sum}" ]] ; then
 fi
 
 debugecho "9p write cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} write ${ninepfile}"
-"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" write "${ninepfile}" < "${tempfile}" || failexit "could not from ${tempfile} to ${ninepuri}"
+"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" write "${ninepfile}" < "${tempfile}" || failexit "could not write to ${tempfile} to ${ninepuri}"
 debugecho "write: successfully wrote ${tempfile} to ${ninepuri}"
 
 if [[ "${rmtempfile}" == "true" ]] ; then
