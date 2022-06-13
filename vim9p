@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+#
+# open vim on a 9p file
+# - read the file locally to a temp file
+# - edit
+# - write the file back to the same location on 9p
+#
+# 9p rdwr mode should work, but probably needs ':w!tee' to write
+# socat+9p rdwr w/pipe+exec continuously reads/rewrites the remote
+# vipe from moreutils may work? http://joeyh.name/code/moreutils/
+# should this be "edit9p"?
+#
+
+set -eu
+set -o pipefail
+
+: ${vim9pdebug:="false"}
+: ${ninepcmd:="9p"}
+: ${ninepargs:=""}
+: ${vimcmd:="vim"}
+: ${vimargs:=""}
+: ${rmtempfile:="false"}
+
+function failexit() {
+  echo "$(basename $(realpath "${BASH_SOURCE[0]}")): failure: ${@}"
+  exit 1
+}
+
+for c in "${ninepcmd## *}" "${vimcmd## *}" ; do
+  command -v "${c}" &>/dev/null || failexit "${c} not found"
+done
+
+function checkdebug() {
+  test "${vim9pdebug}" == "true"
+}
+
+function debugecho() {
+  checkdebug && echo "${@}" | tr -s ' ' 1>&2 || true
+}
+
+declare -a args=()
+for ((i=0;${#}>0;i++)) ; do args["${i}"]="${1}" ; shift ; done
+for ((i=0;i<${#args[${i}]};i++)) ; do debugecho "$i : ${args[$i]}" ; done ;
+
+declare -i li="((${#args[@]}-1))"
+debugecho "li: ${li}"
+
+declare ninepuri="${args[${li}]}"
+debugecho "ninepuri: ${ninepuri}"
+
+declare ninepaddr="${ninepuri%:*}"
+debugecho "ninepaddr: ${ninepaddr}"
+
+declare ninepfile="${ninepuri##*:}"
+debugecho "ninepfile: ${ninepfile}"
+
+declare tempfile="$(mktemp)"
+debugecho "tempfile: ${tempfile}"
+debugecho "replacing ${args[${li}]} with ${tempfile} to pass to vim"
+args[${li}]="${tempfile}"
+
+debugecho "9p read cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} read ${ninepfile}"
+"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" read "${ninepfile}" > "${tempfile}" \
+|| failexit "could not read ${ninepuri} to ${tempfile}"
+
+debugecho "vim cmdline: ${vimcmd} ${vimargs} ${args[@]}"
+"${vimcmd}" ${vimargs} ${args[@]} \
+|| failexit "vim exited with non-zero status"
+
+debugecho "9p write cmdline: ${ninepcmd} ${ninepargs} -a ${ninepaddr} write ${ninepfile}"
+"${ninepcmd}" ${ninepargs} -a "${ninepaddr}" write "${ninepfile}" < "${tempfile}" \
+|| failexit "could not from ${tempfile} to ${ninepuri}"
+
+if [[ "${rmtempfile}" == "true" ]] ; then
+  debugecho "rmtempfile is true, removing ${tempfile}"
+  rm -f "${tempfile}"
+fi
