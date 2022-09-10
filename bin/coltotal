@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+function usage() {
+  local s="$(basename ${BASH_SOURCE[0]})"
+  echo "usage: ${s} [-h] [-p] [-{1..9}] [ file1 [ file2 [ .. ] ] ]"
+  echo "  -h : this help"
+  echo "  -p : pretty print with separator and total"
+  echo "  -{1..9} : which awk column to sum [default '\$1']"
+  echo "note: all other arguments passed to awk as-provided"
+}
+
+: ${pretty:=""}
+: ${prettypre:=""}
+: ${col:=1}
+
+while getopts ":hp123456789" o ; do
+  case "${o}" in
+    h) usage ; exit 0 ;;
+    p) pretty='"\ttotal"' ; prettypre='print "--";' ;;
+    [1-9]) col="${o}" ;;
+  esac
+done
+
+declare -a awkargs=("${@}")
+
+for n in ${!awkargs[@]} ; do
+  for a in p {1..9} ; do
+    if [[ ${awkargs[${n}]} == -${a} ]] ; then
+      awkargs[${n}]=""
+    fi
+  done
+done
+
+eval "awk '{t=t+\$${col};print \$0}END{${prettypre} print t ${pretty}}'" "${awkargs[@]}"
