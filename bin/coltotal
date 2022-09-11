@@ -26,12 +26,23 @@ done
 
 declare -a awkargs=("${@}")
 
-for n in ${!awkargs[@]} ; do
-  for a in p {1..9} ; do
-    if [[ ${awkargs[${n}]} == -${a} ]] ; then
-      awkargs[${n}]=""
-    fi
+# XXX - should iterate over ${@} via ${#} and shift off known args
+# XXX - may pass an array like '([0]="" [1]="")' if _only_ knowns
+if [ ${#} -ge 1 ] ; then
+  for n in ${!awkargs[@]} ; do
+    for a in p {1..9} ; do
+      if [[ ${awkargs[${n}]} == -${a} ]] ; then
+        awkargs[${n}]=""
+      fi
+    done
   done
-done
+fi
 
-eval "awk '{t=t+\$${col};print \$0}END{${prettypre} print t ${pretty}}'" "${awkargs[@]}"
+awkcmd="awk '{t=t+\$${col};print \$0}END{${prettypre} print t ${pretty}}'"
+
+# XXX - could probably just do like "test ${#awkargs[@]} -ge 1 || awkargs[0]=''" here
+if [ ${#awkargs[@]} -ge 1 ] ; then
+  eval "${awkcmd}" "${awkargs[@]}"
+else
+  eval "${awkcmd}"
+fi
