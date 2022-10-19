@@ -8,6 +8,8 @@
 
 set -eu
 
+: ${file:="file"}
+
 prereqs=( 'awk' 'bash' 'base64' 'cat' 'du' 'echo' 'file' 'stat' )
 for prereq in ${prereqs[@]} ; do
   if ! hash "${prereq}" >/dev/null 2>&1 ; then
@@ -38,10 +40,10 @@ for n in ${!fl[@]} ; do
   fi
   if [[ ${f} =~ /dev/stdin ]] ; then
     tf="$( ( cat "${f}" | base64 ) 2>/dev/null )"
-    ft="$( ( echo "${tf}" | base64 -d | file - ) 2>/dev/null )"
+    ft="$( ( echo "${tf}" | base64 -d | ${file} - ) 2>/dev/null )"
     fs="$( ( stat -c %s - <<<$(echo "${tf}" | base64 -d) ) 2>/dev/null )"
   else
-    ft="$(file "${f}")"
+    ft="$(${file} "${f}")"
     if [ -d "${f}" ] ; then
       fs="$(du -ks "${f}" | awk '{print $1}')"
       fs=$((${fs}*1024))
