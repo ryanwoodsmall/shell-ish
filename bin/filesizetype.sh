@@ -66,5 +66,6 @@ done
 
 for n in ${!fl[@]} ; do
   f="${fl[${n}]}"
+  test -r "${f}" &>/dev/null || continue
   printf "%-${fsw}s : %-${fnw}s : %s\\n" "${fsh[${f}]}" "${f}" "${fth[${f}]}"
 done
