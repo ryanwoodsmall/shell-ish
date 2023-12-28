@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# reverse the lines in a file/stdin
+# number the lines (all by default)
+# reverse the lines
+#
+# XXX - given `rev` should this just be `rnl`?
+# XXX - `revnl` doesn't seem to be taken anywhere, so this for now...
+#
+: ${nlargs:="-ba"}
+tac "${@}" | nl ${nlargs} | tac
