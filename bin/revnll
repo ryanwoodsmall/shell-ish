@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#
+# reverse and number input then pipe to less
+# see nll and revnl
+#
+: ${lessargs:="-F -R"}
+revnl "${@}" | less ${lessargs}
