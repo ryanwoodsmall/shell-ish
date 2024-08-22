@@ -8,5 +8,5 @@
 # XXX - `revnl` doesn't seem to be taken anywhere, so this for now...
 # XXX - this is actually more like `tacnl` since `rev` is a totally different thing
 #
-: ${nlargs:="-ba"}
+: ${nlargs:=""}
 tac "${@}" | nl ${nlargs} | tac

@@ -4,4 +4,6 @@
 # see nll and revnl
 #
 : ${lessargs:="-F -R"}
+: ${nlargs:=""}
+export nlargs="${nlargs} -ba"
 revnl "${@}" | less ${lessargs}
