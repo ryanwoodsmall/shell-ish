@@ -5,8 +5,16 @@
 #
 
 for p in gh jq mlr ; do
-  command -v ${p} &>/dev/null || { echo "${p} not found, exiting" ; exit 1 ; }
+  command -v ${p} &>/dev/null || {
+    echo "${p} not found, exiting"
+    exit 1
+  }
 done
+
+gh auth status &>/dev/null || {
+  echo "it looks like you might not be logged in - see 'gh auth --help' for info"
+  exit 1
+}
 
 {
   echo 'name,version,url'
