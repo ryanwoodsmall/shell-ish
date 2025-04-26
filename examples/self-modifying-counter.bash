@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# self-modifying iterator with like-named variable
+# self-modifying counter with like-named variable
 #
 
-function iter() {
+function counter() {
   local -i i=0
   local -i n=$((i+1))
   local funcname="${FUNCNAME[0]}"
