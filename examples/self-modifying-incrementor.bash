@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # self-modifying incrementor with like-named variable
-# unlike examples/self-modifying-iterator.bash this takes optional starting and step values
+# unlike examples/self-modifying-counter.bash this takes optional starting and step values
 # exports a hash of YYYYMMDDHHMMSS to value
 # XXX - only one second granularity, busybox date doesn't support real $N for nanosecond?
 #
