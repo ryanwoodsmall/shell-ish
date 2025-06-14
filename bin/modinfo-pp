@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# pretty print module params
+#
+# XXX - 'modinfo -p' is preferable, but some modules have multi-line descriptions
+# XXX - could work around with an array used as a buffer; below is easier for now
+#
+
+set -eu
+
+export me="$(basename -- $(realpath -- ${BASH_SOURCE[0]}))"
+
+function failexit() {
+  while [[ ${#} -gt 0 ]] ; do
+    printf '%s: %s\n' "${me}" "${1}" 1>&2
+    shift
+  done
+  exit 1
+}
+
+if [[ ${#} -lt 1 ]] ; then
+  failexit "please provide at least one module name"
+fi
+
+while [[ ${#} -gt 0 ]] ; do
+  m="${1}"
+  printf '%s:\n' "${m}"
+  modinfo "${m}" | grep '^parm:' | tr '\t' ' ' | tr -s ' ' | while IFS= read -r l ; do
+    l="${l#parm: }"
+    p="${l%%:*}"
+    l="${l#${p}:}"
+    l="${l//\"/\'}"
+    printf '  %s:\n    - "%s"\n' "${p}" "${l}"
+  done
+  shift
+done
