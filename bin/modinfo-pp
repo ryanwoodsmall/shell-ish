@@ -4,6 +4,8 @@
 #
 # XXX - 'modinfo -p' is preferable, but some modules have multi-line descriptions
 # XXX - could work around with an array used as a buffer; below is easier for now
+# XXX - or... gotta do 'modinfo module', parse out everything before parm, then iterate
+# XXX - why isn't modinfo output normalized?
 #
 
 set -eu
