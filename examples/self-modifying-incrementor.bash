@@ -31,7 +31,7 @@ function incr() {
         if [[ ${1} =~ ^(|-)[0-9]+$ ]] ; then
           p="${1}"
           shift
-        else 
+        else
           return
         fi
       fi
