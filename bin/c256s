@@ -3,5 +3,25 @@
 # curl something and get its sha-256 sum
 #
 set -eou pipefail
+
+sn="$(basename -- ${BASH_SOURCE[0]})"
+: ${curlcmd:="curl"}
 : ${curlopts:="-f -k -L -s"}
-curl ${curlopts} "${@}" | sha256sum | awk '{print $1}'
+
+function failexit() {
+  while [[ ${#} -ge 1 ]] ; do
+    printf '%s: %s\n' "${sn}" "${1}"
+    shift
+  done
+  exit 1
+}
+
+if [[ ${#} -lt 1 ]] ; then
+  failexit "please provide one url"
+fi
+
+if ! command -v ${curlcmd} &> /dev/null ; then
+  failexit "please install curl"
+fi
+
+${curlcmd} ${curlopts} "${@}" | sha256sum | awk '{print $1}'
