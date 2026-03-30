@@ -6,11 +6,12 @@
 # XXX - could work around with an array used as a buffer; below is easier for now
 # XXX - or... gotta do 'modinfo module', parse out everything before parm, then iterate
 # XXX - why isn't modinfo output normalized?
+# XXX - this doesn't work
 #
 
 set -eu
 
-export me="$(basename -- $(realpath -- ${BASH_SOURCE[0]}))"
+export me="$(basename -- $(realpath ${BASH_SOURCE[0]}))"
 
 function failexit() {
   while [[ ${#} -gt 0 ]] ; do

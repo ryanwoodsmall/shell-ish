@@ -27,9 +27,9 @@ fi
 
 for p in $(pgrep -x ${procname}) ; do
   if [[ $(stat -c '%u' /proc/${p}/) == ${UID} ]] ; then
-    if [ -r /proc/${p}/exe ] ; then
-      if [[ $(realpath /proc/${p}/exe | cut -f1 -d';' | sed 's/(deleted)//g' | xargs basename) =~ ^${procname}$ ]] ; then
-        realpath /proc/${p}/cwd 2>/dev/null
+    if [ -r "/proc/${p}/exe" ] ; then
+      if [[ $(realpath "/proc/${p}/exe" | cut -f1 -d';' | sed 's/(deleted)//g' | xargs basename) =~ ^${procname}$ ]] ; then
+        realpath "/proc/${p}/cwd" 2>/dev/null
       fi
     fi
   fi
