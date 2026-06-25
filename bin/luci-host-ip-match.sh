@@ -32,4 +32,4 @@ tok="$(curl ${copts} ${rpc}/auth --data "${authjson}" | jq -r .result)"
 curl ${copts} "${rpc}/sys?auth=${tok}" --data '{ "method": "net.ipv4_hints" }' \
 | jq -r '.result[]|.[]' \
 | grep -B1 "${match}" \
-| egrep -vi "^(${match}|--)"
+| grep -E -vi "^(${match}|--)"

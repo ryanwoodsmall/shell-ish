@@ -11,7 +11,7 @@ fi
 
 cacf="${1}"
 
-egrep -n -- '^-----(BEGIN|END) (TRUSTED |)CERTIFICATE-----$' ${cacf} | nl -w1 -s: | cut -f1-2 -d: | while read -r cpn ; do
+grep -E -n -- '^-----(BEGIN|END) (TRUSTED |)CERTIFICATE-----$' ${cacf} | nl -w1 -s: | cut -f1-2 -d: | while read -r cpn ; do
   cln=${cpn/*:/}
   cpln=${cpn/:*/}
   if [[ $((${cpln}%2)) != 0 ]] ; then

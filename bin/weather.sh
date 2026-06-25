@@ -19,4 +19,4 @@ fi
 
 # en.wttr.in ~= wttr.in/...?lang=en
 curl -kLs "https://en.wttr.in/${wttrinloc// /%20}" \
-| egrep -v '^(New|Follow|$)'
+| grep -E -v '^(New|Follow|$)'

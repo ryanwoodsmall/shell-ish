@@ -17,7 +17,7 @@ lsusb \
   d="${i#*:}"
   h="${u%%: *}"
   sed -n "/^${m}/,/^[0-9a-f]\{4\}  /p" /tmp/usb.ids \
-  | egrep "^(${m}  |[[:blank:]]${d}  )" \
+  | grep -E "^(${m}  |[[:blank:]]${d}  )" \
   | tr -d '\t' \
   | sed "s/^\(${m}\|${d}\)  //g" \
   | xargs echo "${h}: ID ${m}:${d}"

@@ -11,7 +11,7 @@
 #   | tr -s ' ' \
 #   | sed 's/ : /=/g;/:$/d' \
 #   | sort -u \
-#   | egrep -vi '^($|(processor|core id|(initial |)apicid|cpu mhz)=)' \
+#   | grep -E -vi '^($|(processor|core id|(initial |)apicid|cpu mhz)=)' \
 #   | jo -p \
 #   | jq .
 #

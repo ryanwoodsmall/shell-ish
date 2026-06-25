@@ -15,11 +15,11 @@ sdk list \
 | while read -r p ; do
     echo $p
     sdk list $p \
-    | egrep -v '^(=|>|Available|\+|\*|[[:space:]]{1,}$|^$)'
+    | grep -E -v '^(=|>|Available|\+|\*|[[:space:]]{1,}$|^$)'
     done \
 | tee ${of}
 
 echo
 
-egrep '(^[a-zA-Z]|>|\*)' ${of} \
-| egrep -B1 '(>|\*)'
+grep -E '(^[a-zA-Z]|>|\*)' ${of} \
+| grep -E -B1 '(>|\*)'

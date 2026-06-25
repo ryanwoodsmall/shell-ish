@@ -12,7 +12,7 @@ WSHAEGREPVPATTERN='^(filename|supported|license|description|author|depends|verma
 DEFAULTPORT="443"
 
 usage () {
-	${VIMCMD} -h | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
+	${VIMCMD} -h | grep -E -v $WSHAEGREPVPATTERN 2>/dev/null
 }
 
 while getopts "H:O:P:U:hv" opt ; do
@@ -34,7 +34,7 @@ while getopts "H:O:P:U:hv" opt ; do
 		exit
 		;;
 	v)
-		${VIMCMD} -v | egrep -v $WSHAEGREPVPATTERN 2>/dev/null
+		${VIMCMD} -v | grep -E -v $WSHAEGREPVPATTERN 2>/dev/null
 		;;
 	esac
 done
@@ -51,4 +51,4 @@ fi
 
 ESXTHUMBPRINT=`gethttpscert.sh -h ${ESXHOST} -p ${ESXPORT} | certfingerprint.sh`
 
-${VIMCMD} -t "${ESXTHUMBPRINT}" "${@}" | egrep -v $WSHAEGREPVPATTERN
+${VIMCMD} -t "${ESXTHUMBPRINT}" "${@}" | grep -E -v $WSHAEGREPVPATTERN
